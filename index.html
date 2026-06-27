@@ -153,60 +153,28 @@
   .email-text { font-size:13px;line-height:1.55; }
   .email-text a { font-weight:600;text-decoration:underline; }
 
-  /* NARRATIVE SECTION */
-  .narrative-wrap { max-width:780px;margin:0 auto;padding:36px 24px 0; }
-  .leadership-type-card {
-    background:var(--blue); border:1px solid rgba(232,184,75,0.4);
-    padding:28px 32px; margin-bottom:20px; text-align:center;
-  }
-  .leadership-type-eyebrow {
-    font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.18em;
-    color:rgba(232,184,75,0.7);text-transform:uppercase;margin-bottom:10px;
-  }
-  .leadership-type-label {
-    font-family:'Playfair Display',serif;font-size:clamp(22px,4vw,34px);
-    color:var(--gold);font-weight:700;margin-bottom:8px;line-height:1.2;
-  }
-  .leadership-type-arch {
-    font-family:'Inter',sans-serif;font-size:13px;
-    color:rgba(183,210,240,0.6);letter-spacing:0.06em;
-  }
-  .narrative-card {
-    background:var(--white);border:1px solid var(--border);
-    padding:32px;margin-bottom:20px;
-  }
-  .narrative-eyebrow {
-    font-family:'JetBrains Mono',monospace;font-size:10px;
-    letter-spacing:0.15em;color:var(--gold);text-transform:uppercase;margin-bottom:18px;
-  }
-  .narrative-para {
-    font-size:15px;line-height:1.85;color:var(--text);margin-bottom:16px;
-  }
+  /* NARRATIVE */
+  .narrative-wrap { max-width:780px;margin:0 auto;padding:32px 24px 0; }
+  .leadership-type-card { background:var(--blue);border:1px solid rgba(232,184,75,0.4);padding:24px 28px;margin-bottom:16px;text-align:center; }
+  .lt-eyebrow { font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.18em;color:rgba(232,184,75,0.7);text-transform:uppercase;margin-bottom:8px; }
+  .lt-label { font-family:'Playfair Display',serif;font-size:clamp(20px,3.5vw,30px);color:var(--gold);font-weight:700;line-height:1.2; }
+  .narrative-highlights { display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px; }
+  .nh-card { padding:16px 18px;border:1px solid var(--border);background:var(--white); }
+  .nh-card.strength { border-left:3px solid var(--green); }
+  .nh-card.growth { border-left:3px solid var(--gold); }
+  .nh-label { font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.15em;text-transform:uppercase;margin-bottom:6px; }
+  .nh-label.strength { color:var(--green); }
+  .nh-label.growth { color:var(--gold); }
+  .nh-pillar { font-family:'Playfair Display',serif;font-size:14px;color:var(--blue);margin-bottom:5px;font-weight:600; }
+  .nh-text { font-size:12px;line-height:1.6;color:var(--muted); }
+  .narrative-card { background:var(--white);border:1px solid var(--border);padding:28px;margin-bottom:16px; }
+  .narrative-eyebrow { font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.15em;color:var(--gold);text-transform:uppercase;margin-bottom:16px; }
+  .narrative-para { font-size:15px;line-height:1.85;color:var(--text);margin-bottom:14px; }
   .narrative-para:last-child { margin-bottom:0; }
-  .narrative-highlights {
-    display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px;
-  }
-  .highlight-card {
-    padding:18px 20px;border:1px solid var(--border);
-  }
-  .highlight-card.strength { border-left:3px solid var(--green); }
-  .highlight-card.growth { border-left:3px solid var(--gold); }
-  .highlight-label {
-    font-family:'JetBrains Mono',monospace;font-size:9px;
-    letter-spacing:0.15em;text-transform:uppercase;margin-bottom:8px;
-  }
-  .highlight-label.strength { color:var(--green); }
-  .highlight-label.growth { color:var(--gold); }
-  .highlight-pillar {
-    font-family:'Playfair Display',serif;font-size:14px;
-    color:var(--blue);margin-bottom:6px;font-weight:600;
-  }
-  .highlight-text { font-size:12px;line-height:1.6;color:var(--muted); }
-  @media(max-width:600px){
-    .narrative-highlights{grid-template-columns:1fr;}
-  }
+  .narrative-close { font-style:italic;color:var(--blue);border-left:3px solid var(--gold);padding-left:14px; }
+  @media(max-width:600px){ .narrative-highlights{grid-template-columns:1fr;} }
 
-  /* AI Summary (executive) */
+  /* AI Summary */
   .ai-summary-wrap { max-width:780px;margin:0 auto;padding:36px 24px 0; }
   .ai-card { background:var(--white);border:1px solid var(--border);padding:26px;margin-bottom:24px; }
   .ai-eyebrow { font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.15em;color:var(--gold);text-transform:uppercase;margin-bottom:12px; }
@@ -428,47 +396,32 @@
   </div>
 
   <div class="narrative-wrap" id="narrative-wrap" style="display:none">
-
-    <!-- Leadership Type -->
     <div class="leadership-type-card">
-      <div class="leadership-type-eyebrow">Your Leadership Identity</div>
-      <div class="leadership-type-label" id="leadership-type-label">
-        <div class="ai-loading"><div class="ai-dot"></div><div class="ai-dot"></div><div class="ai-dot"></div></div>
-      </div>
-      <div class="leadership-type-arch" id="leadership-type-arch"></div>
+      <div class="lt-eyebrow">Your Leadership Identity</div>
+      <div class="lt-label" id="lt-label">Generating your profile…</div>
     </div>
-
-    <!-- Strength + Growth highlights -->
     <div class="narrative-highlights">
-      <div class="highlight-card strength">
-        <div class="highlight-label strength">Your Foundation</div>
-        <div class="highlight-pillar" id="strongest-pillar-name"></div>
-        <div class="highlight-text" id="strongest-pillar-insight">
-          <div class="ai-loading"><div class="ai-dot"></div><div class="ai-dot"></div><div class="ai-dot"></div></div>
-        </div>
+      <div class="nh-card strength">
+        <div class="nh-label strength">Your Foundation</div>
+        <div class="nh-pillar" id="nh-strong-name"></div>
+        <div class="nh-text" id="nh-strong-text">Analyzing…</div>
       </div>
-      <div class="highlight-card growth">
-        <div class="highlight-label growth">Your Growth Edge</div>
-        <div class="highlight-pillar" id="growth-pillar-name"></div>
-        <div class="highlight-text" id="growth-pillar-insight">
-          <div class="ai-loading"><div class="ai-dot"></div><div class="ai-dot"></div><div class="ai-dot"></div></div>
-        </div>
+      <div class="nh-card growth">
+        <div class="nh-label growth">Your Growth Edge</div>
+        <div class="nh-pillar" id="nh-growth-name"></div>
+        <div class="nh-text" id="nh-growth-text">Analyzing…</div>
       </div>
     </div>
-
-    <!-- Full narrative -->
     <div class="narrative-card">
       <div class="narrative-eyebrow">Your Leadership Narrative</div>
-      <div id="narrative-opening" class="narrative-para">
-        <div class="ai-loading"><div class="ai-dot"></div><div class="ai-dot"></div><div class="ai-dot"></div><span>Crafting your narrative…</span></div>
-      </div>
-      <div id="narrative-middle" class="narrative-para" style="display:none"></div>
-      <div id="narrative-growth" class="narrative-para" style="display:none"></div>
-      <div id="narrative-close" class="narrative-para" style="display:none;font-style:italic;color:var(--blue);border-left:3px solid var(--gold);padding-left:16px;"></div>
+      <div class="narrative-para" id="n-opening">Crafting your personalized narrative…</div>
+      <div class="narrative-para" id="n-middle" style="display:none"></div>
+      <div class="narrative-para" id="n-growth" style="display:none"></div>
+      <div class="narrative-para narrative-close" id="n-close" style="display:none"></div>
     </div>
   </div>
 
-
+  <div class="ai-summary-wrap">
     <div class="ai-card">
       <div class="ai-eyebrow">Executive Summary</div>
       <div class="ai-text" id="ai-exec-text">
@@ -486,20 +439,20 @@
 
   <div class="share-section" id="share-section" style="display:none">
     <div class="share-title">Invite your team to rate you</div>
-    <div class="share-desc">Share this link with your direct reports. They'll answer the same 24 questions about <em>your</em> leadership. You'll see exactly where your self-perception and their experience diverge.</div>
+    <div class="share-desc">Share this link with your direct reports. They'll answer the same 24 questions about your leadership anonymously. You'll see where your self-perception and their experience diverge.</div>
     <div class="share-link-box">
       <input class="share-link-input" id="share-link" readonly onclick="this.select()" />
       <button class="btn-copy" id="btn-copy" onclick="copyShareLink()">Copy Link</button>
     </div>
-    <div style="margin-bottom:8px;">
+    <div style="margin-bottom:20px;">
       <a id="share-link-anchor" href="#" target="_blank" style="color:var(--gold);font-size:12px;font-family:'JetBrains Mono',monospace;text-decoration:underline;">Open link to test it →</a>
     </div>
-    <div style="background:rgba(255,255,255,0.06);border:1px solid rgba(232,184,75,0.2);padding:16px;max-width:480px;margin:0 auto 16px;text-align:left;">
-      <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:rgba(232,184,75,0.6);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:10px;">💡 Tip — paste this into your email instead:</div>
-      <div style="font-size:13px;color:rgba(183,210,240,0.8);line-height:1.6;margin-bottom:10px;" id="share-email-template">I'd love your honest feedback on my leadership. Please take this short assessment — it takes about 8 minutes and your response is anonymous:<br><br><span id="share-link-display" style="color:var(--gold);">generating link…</span></div>
-      <button onclick="copyEmailText()" style="background:none;border:1px solid rgba(232,184,75,0.4);color:var(--gold);padding:7px 16px;font-family:'Inter',sans-serif;font-size:11px;font-weight:600;cursor:pointer;letter-spacing:0.05em;">Copy Email Text</button>
+    <div style="background:rgba(255,255,255,0.06);border:1px solid rgba(232,184,75,0.25);padding:18px;max-width:480px;margin:0 auto 16px;">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:rgba(232,184,75,0.7);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:10px;">💡 Paste this into your email:</div>
+      <div style="font-size:13px;color:rgba(183,210,240,0.85);line-height:1.7;margin-bottom:12px;">I'd love your honest feedback on my leadership. Please take this short assessment — it takes about 8 minutes and your response is completely anonymous.<br><br><span id="share-url-display" style="color:var(--gold);word-break:break-all;font-size:12px;"></span></div>
+      <button id="btn-copy-email" onclick="copyEmailText()" style="background:var(--gold);color:var(--blue-dark);border:none;padding:8px 20px;font-family:'Inter',sans-serif;font-weight:700;font-size:12px;cursor:pointer;">Copy Email Text</button>
     </div>
-    <div class="share-note">Team members' responses are anonymous. The link works on any device.</div>
+    <div class="share-note">Team members' responses are anonymous. Works on any device.</div>
   </div>
 
   <div class="site-footer">
@@ -848,7 +801,7 @@ function computeScores(){
 function getArchetype(t){ return ARCHETYPES.find(a=>t>=a.min&&t<=a.max)||ARCHETYPES[0]; }
 
 // ════════════════════════════════════════════════
-// ANALYSIS — two-phase: fast results first, narrative after
+// ANALYSIS
 // ════════════════════════════════════════════════
 async function runAnalysis(){
   showScreen('screen-loading');
@@ -860,23 +813,16 @@ async function runAnalysis(){
   let mi=0;
   const msgEl=document.getElementById('loading-msg');
   const iv=setInterval(()=>{msgEl.textContent=msgs[mi%msgs.length];mi++;},1800);
-
-  // Run BOTH calls in parallel — pillar analysis and narrative at the same time
-  const [pillarResult] = await Promise.allSettled([
-    generatePillarResults(),
-    generateNarrativeInBackground()
-  ]);
-  if(pillarResult.status==='rejected'){ generateFallbackResults(); }
-
+  try{ await generateAIResults(); }catch(e){ console.error(e); generateFallbackResults(); }
   clearInterval(iv);
   buildResultsScreen();
   showScreen('screen-results');
   setTimeout(animatePillars,400);
   setTimeout(sendEmail,1000);
+  setTimeout(generateNarrative,500);
 }
 
-// Phase 1: fast pillar analysis only
-async function generatePillarResults(){
+async function generateAIResults(){
   const scoresSummary=pillarScores.map(ps=>`${ps.pillar.name}: ${ps.total}/${ps.max} (${ps.pct}%)`).join('\n');
   const qaSummary=QUESTIONS.map((q,i)=>{
     const chosen=q.options.find(o=>o.val===answers[i]);
@@ -885,19 +831,18 @@ async function generatePillarResults(){
   }).join('\n');
   const totalScore=pillarScores.reduce((s,p)=>s+p.total,0);
   const archetype=getArchetype(totalScore);
-  const perspective=isTeamMode
-    ?`This is a team member's assessment of ${leaderName}'s leadership.`
-    :`This is a self-assessment by ${userName}${userRole?', '+userRole:''}.`;
+  const perspective=isTeamMode?`This is a team member's assessment of ${leaderName}'s leadership.`:`This is a self-assessment by ${userName}${userRole?', '+userRole:''}.`;
 
   const prompt=`You are an expert leadership coach specializing in servant leadership based on Dr. Jeremy Graves' framework "The Leader Paradox" — Seven Pillars: Personal Integrity & Ethics, Others First, Communication & Listening, Collaboration, Leading With the Future in Mind, Self-Care & Mental Health, Continuous Team Development.
 
-${perspective} Archetype: ${archetype.label} (${totalScore}/96)
-Pillar scores: ${scoresSummary}
+${perspective}
+Scores: ${scoresSummary}
+Total: ${totalScore}/96 — Archetype: ${archetype.label}
 Responses: ${qaSummary}
 
-Use American English. Respond ONLY with raw JSON, no markdown:
-{"executiveSummary":"2-3 sentences. Professional summary of their servant leadership profile. Reference specific pillars. Honest and constructive.","pillars":[
-{"pillarName":"Personal Integrity & Ethics","score":${pillarScores[0].total},"analysis":"2-3 concrete sentences based on actual choices.","actions":["Specific action 1","Specific action 2","Specific action 3"]},
+Use American English spelling throughout. Respond ONLY with raw JSON, no markdown:
+{"executiveSummary":"3-4 sentences. Direct, professional. Reference specific pillars. Honest but constructive. Second person if self-assessment, third person if team rating.","pillars":[
+{"pillarName":"Personal Integrity & Ethics","score":${pillarScores[0].total},"analysis":"2-3 concrete sentences based on actual choices.","actions":["Action 1","Action 2","Action 3"]},
 {"pillarName":"Others First","score":${pillarScores[1].total},"analysis":"2-3 sentences.","actions":["Action 1","Action 2","Action 3"]},
 {"pillarName":"Communication & Listening","score":${pillarScores[2].total},"analysis":"2-3 sentences.","actions":["Action 1","Action 2","Action 3"]},
 {"pillarName":"Collaboration","score":${pillarScores[3].total},"analysis":"2-3 sentences.","actions":["Action 1","Action 2","Action 3"]},
@@ -905,136 +850,18 @@ Use American English. Respond ONLY with raw JSON, no markdown:
 {"pillarName":"Self-Care & Mental Health","score":${pillarScores[5].total},"analysis":"2-3 sentences.","actions":["Action 1","Action 2","Action 3"]},
 {"pillarName":"Continuous Team Development","score":${pillarScores[6].total},"analysis":"2-3 sentences.","actions":["Action 1","Action 2","Action 3"]}]}`;
 
-  const resp=await Promise.race([
-    fetch('https://api.anthropic.com/v1/messages',{
-      method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1600,messages:[{role:'user',content:prompt}]})
-    }),
-    new Promise((_,reject)=>setTimeout(()=>reject(new Error('timeout')),18000))
-  ]);
+  const resp=await fetch('https://api.anthropic.com/v1/messages',{
+    method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1800,messages:[{role:'user',content:prompt}]})
+  });
   const data=await resp.json();
   const parsed=JSON.parse((data.content?.[0]?.text||'').replace(/```json|```/g,'').trim());
   pillarAnalyses=parsed.pillars;
   window._aiExecSummary=parsed.executiveSummary;
 }
 
-// Phase 2: narrative loads in parallel with pillar results
-async function generateNarrativeInBackground(){
-  const scoresSummary=pillarScores.map(ps=>`${ps.pillar.name}: ${ps.total}/${ps.max} (${ps.pct}%)`).join('\n');
-  const qaSummary=QUESTIONS.map((q,i)=>{
-    const chosen=q.options.find(o=>o.val===answers[i]);
-    const letter=answers[i]?String.fromCharCode(64+answers[i]):'?';
-    return `Q${i+1} [${PILLARS[q.pillar].short}]: ${answers[i]}/4 — "${chosen?.label||''}"`;
-  }).join('\n');
-  const totalScore=pillarScores.reduce((s,p)=>s+p.total,0);
-  const archetype=getArchetype(totalScore);
-  const strongestPillar=pillarScores.reduce((a,b)=>a.pct>b.pct?a:b);
-  const growthPillar=pillarScores.reduce((a,b)=>a.pct<b.pct?a:b);
-  const who=isTeamMode?`Team member rating ${leaderName}`:`${userName}${userRole?', '+userRole:''}`;
-
-  // Simple clean prompt — data only, schema in system
-  const systemPrompt=`You are a servant leadership coach for Dr. Jeremy Graves' "The Leader Paradox". Write in second person, American English, warm and honest. Always respond with valid JSON only — no markdown, no code fences, no extra text. JSON schema: {"leadershipType":"string","narrative":{"opening":"string","middle":"string","growth":"string","close":"string"},"strongestPillarInsight":"string","growthPillarInsight":"string"}`;
-
-  const userMessage=`Respondent: ${who}
-Archetype: ${archetype.label} (${totalScore}/96)
-Strongest pillar: ${strongestPillar.pillar.name} (${strongestPillar.pct}%)
-Growth edge: ${growthPillar.pillar.name} (${growthPillar.pct}%)
-All scores: ${scoresSummary}
-Their choices: ${qaSummary}
-
-Write their leadership narrative. leadershipType: 3-5 word evocative label specific to their pattern. opening: 4-5 warm affirming sentences referencing their strongest pillar and specific choices. middle: 5-6 sentences on their full leadership identity across all 7 pillars — what their team experiences, connections between pillars. growth: 4-5 honest sentences naming the growth edge pillar specifically, what it costs, what changes if they close it. close: 2-3 memorable mentor sentences they would screenshot. strongestPillarInsight: 3-4 sentences on their highest pillar. growthPillarInsight: 3-4 sentences on their lowest pillar.`;
-
-  try{
-    const resp=await Promise.race([
-      fetch('https://api.anthropic.com/v1/messages',{
-        method:'POST',
-        headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({
-          model:'claude-sonnet-4-6',
-          max_tokens:1500,
-          system: systemPrompt,
-          messages:[{role:'user',content:userMessage}]
-        })
-      }),
-      new Promise((_,reject)=>setTimeout(()=>reject(new Error('timeout')),35000))
-    ]);
-    const data=await resp.json();
-    if(data.error) throw new Error(data.error.message);
-    const raw=(data.content?.[0]?.text||'').trim();
-    const parsed=JSON.parse(raw);
-    window._aiLeadershipType=parsed.leadershipType;
-    window._aiNarrative=parsed.narrative;
-    window._aiStrongestInsight=parsed.strongestPillarInsight;
-    window._aiGrowthInsight=parsed.growthPillarInsight;
-    // Populate if results screen already visible, otherwise buildResultsScreen will handle it
-    if(document.getElementById('screen-results').classList.contains('active')){
-      populateNarrative();
-    }
-  }catch(e){
-    console.error('Narrative failed:',e.message);
-    const openingEl=document.getElementById('narrative-opening');
-    if(openingEl){
-      openingEl.innerHTML=`<span style="color:var(--muted);font-size:13px;">Narrative generation timed out.</span> <button onclick="generateNarrativeInBackground()" style="background:var(--gold);color:var(--blue-dark);border:none;padding:6px 16px;font-family:'Inter',sans-serif;font-weight:700;font-size:12px;cursor:pointer;margin-left:8px;">Try Again →</button>`;
-    }
-  }
-}
-
-function populateNarrative(){
-  const totalScore=pillarScores.reduce((s,p)=>s+p.total,0);
-  const arch=getArchetype(totalScore);
-  const strongestPillar=pillarScores.reduce((a,b)=>a.pct>b.pct?a:b);
-  const growthPillar=pillarScores.reduce((a,b)=>a.pct<b.pct?a:b);
-
-  if(window._aiLeadershipType){
-    document.getElementById('leadership-type-label').textContent=window._aiLeadershipType;
-    document.getElementById('leadership-type-arch').textContent=arch.label+' · '+totalScore+'/96';
-  }
-  if(window._aiStrongestInsight)
-    document.getElementById('strongest-pillar-insight').textContent=window._aiStrongestInsight;
-  if(window._aiGrowthInsight)
-    document.getElementById('growth-pillar-insight').textContent=window._aiGrowthInsight;
-  if(window._aiNarrative){
-    const n=window._aiNarrative;
-    document.getElementById('narrative-opening').textContent=n.opening||'';
-    const mid=document.getElementById('narrative-middle');
-    mid.textContent=n.middle||''; mid.style.display='block';
-    const grw=document.getElementById('narrative-growth');
-    grw.textContent=n.growth||''; grw.style.display='block';
-    const cls=document.getElementById('narrative-close');
-    cls.textContent=n.close||''; cls.style.display='block';
-  }
-}
-
-function populateFallbackNarrative(){
-  const totalScore=pillarScores.reduce((s,p)=>s+p.total,0);
-  const arch=getArchetype(totalScore);
-  const strongestPillar=pillarScores.reduce((a,b)=>a.pct>b.pct?a:b);
-  const growthPillar=pillarScores.reduce((a,b)=>a.pct<b.pct?a:b);
-  document.getElementById('leadership-type-label').textContent=arch.label;
-  document.getElementById('leadership-type-arch').textContent=totalScore+'/96';
-  document.getElementById('strongest-pillar-insight').textContent=
-    `Your responses in ${strongestPillar.pillar.name} reflect consistent, deliberate servant leadership in this area.`;
-  document.getElementById('growth-pillar-insight').textContent=
-    `${growthPillar.pillar.name} represents your clearest opportunity to deepen your servant leadership practice.`;
-  document.getElementById('narrative-opening').textContent=
-    `Your results reveal a leader with real strengths to build on. ${strongestPillar.pillar.name} stands out as your foundation — the area where your servant leadership instincts are most consistently expressed.`;
-  const mid=document.getElementById('narrative-middle');
-  mid.textContent=`Across the Seven Pillars, your pattern shows a leader who is ${arch.label==='The Servant Exemplar'?'deeply committed to serving others':'developing the habits and practices of servant leadership'}. The way you responded to the scenario-based questions reveals both your instincts and the areas where those instincts haven't yet become consistent habits.`;
-  mid.style.display='block';
-  const grw=document.getElementById('narrative-growth');
-  grw.textContent=`Your growth edge is ${growthPillar.pillar.name}. This isn't a weakness — it's the next frontier. Closing this gap won't just improve a score; it will change how your team experiences your leadership every day.`;
-  grw.style.display='block';
-  const cls=document.getElementById('narrative-close');
-  cls.textContent=`The fact that you're here, asking these questions, already sets you apart. The leaders who grow the most are the ones willing to look honestly at where they are.`;
-  cls.style.display='block';
-}
-
 function generateFallbackResults(){
   window._aiExecSummary=null;
-  window._aiNarrative=null;
-  window._aiLeadershipType=null;
-  window._aiStrongestInsight=null;
-  window._aiGrowthInsight=null;
   pillarAnalyses=pillarScores.map(ps=>{
     const pct=ps.pct;
     let analysis,actions;
@@ -1071,16 +898,7 @@ function buildResultsScreen(){
   document.getElementById('results-desc').textContent=arch.desc;
   document.getElementById('ai-exec-text').innerHTML=window._aiExecSummary
     ?`<p>${window._aiExecSummary}</p>`
-    :`<p>Assessment complete. Your leadership narrative is loading below — review your pillar breakdowns while it generates.</p>`;
-
-  // Show narrative wrap immediately with loading spinners — content fills from parallel call
-  const strongestPillar=pillarScores.reduce((a,b)=>a.pct>b.pct?a:b);
-  const growthPillar=pillarScores.reduce((a,b)=>a.pct<b.pct?a:b);
-  document.getElementById('narrative-wrap').style.display='block';
-  document.getElementById('strongest-pillar-name').textContent=strongestPillar.pillar.name;
-  document.getElementById('growth-pillar-name').textContent=growthPillar.pillar.name;
-  // If narrative already finished (parallel call completed), populate it now
-  if(window._aiLeadershipType) populateNarrative();
+    :`<p>Assessment complete. Review your pillar breakdowns below for detailed analysis and recommended actions.</p>`;
 
   // Column viz
   const cw=document.getElementById('cols-wrap'); cw.innerHTML='';
@@ -1129,8 +947,8 @@ function buildResultsScreen(){
     document.getElementById('share-link').value=shareURL;
     const anchor=document.getElementById('share-link-anchor');
     if(anchor){ anchor.href=shareURL; anchor.textContent='Open link to test it →'; }
-    const display=document.getElementById('share-link-display');
-    if(display){ display.textContent=shareURL; }
+    const urlDisplay=document.getElementById('share-url-display');
+    if(urlDisplay){ urlDisplay.textContent=shareURL; }
   }
 }
 
@@ -1154,54 +972,89 @@ function animatePillars(){
 function copyShareLink(){
   const inp=document.getElementById('share-link');
   inp.select(); inp.setSelectionRange(0,99999);
-  try {
-    navigator.clipboard.writeText(inp.value).then(()=>{
-      showCopied();
-    }).catch(()=>{
-      document.execCommand('copy');
-      showCopied();
-    });
-  } catch(e){
-    document.execCommand('copy');
-    showCopied();
-  }
+  navigator.clipboard.writeText(inp.value).catch(()=>document.execCommand('copy'));
+  const btn=document.getElementById('btn-copy');
+  if(!btn) return;
+  btn.textContent='✓ Copied!'; btn.style.background='var(--green)'; btn.style.color='white';
+  setTimeout(()=>{ btn.textContent='Copy Link'; btn.style.background='var(--gold)'; btn.style.color='var(--blue-dark)'; },2500);
 }
+
 function copyEmailText(){
   const url=document.getElementById('share-link').value;
-  const text=`I'd love your honest feedback on my leadership. Please take this short assessment — it takes about 8 minutes and your response is completely anonymous:\n\n${url}\n\nThank you — your perspective matters.`;
+  const text=`I'd love your honest feedback on my leadership. Please take this short assessment — it takes about 8 minutes and your response is completely anonymous.\n\n${url}\n\nThank you — your perspective matters.`;
+  const btn=document.getElementById('btn-copy-email');
   navigator.clipboard.writeText(text).then(()=>{
-    const btn=event.target;
-    btn.textContent='✓ Copied!';
-    btn.style.background='rgba(45,122,79,0.2)';
-    btn.style.borderColor='var(--green)';
-    btn.style.color='#6FCF97';
-    setTimeout(()=>{
-      btn.textContent='Copy Email Text';
-      btn.style.background='none';
-      btn.style.borderColor='rgba(232,184,75,0.4)';
-      btn.style.color='var(--gold)';
-    },2500);
+    btn.textContent='✓ Copied!'; btn.style.background='var(--green)'; btn.style.color='white';
+    setTimeout(()=>{ btn.textContent='Copy Email Text'; btn.style.background='var(--gold)'; btn.style.color='var(--blue-dark)'; },2500);
   }).catch(()=>{
-    // Fallback
     const ta=document.createElement('textarea');
-    ta.value=text; document.body.appendChild(ta);
-    ta.select(); document.execCommand('copy');
-    document.body.removeChild(ta);
+    ta.value=text; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta);
+    btn.textContent='✓ Copied!';
+    setTimeout(()=>{ btn.textContent='Copy Email Text'; },2500);
   });
 }
 
-function showCopied(){
-  const btn=document.getElementById('btn-copy');
-  if(!btn) return;
-  btn.textContent='✓ Copied!';
-  btn.style.background='var(--green)';
-  btn.style.color='white';
-  setTimeout(()=>{
-    btn.textContent='Copy Link';
-    btn.style.background='var(--gold)';
-    btn.style.color='var(--blue-dark)';
-  },3000);
+// ── NARRATIVE ──
+async function generateNarrative(){
+  const total=pillarScores.reduce((s,p)=>s+p.total,0);
+  const arch=getArchetype(total);
+  const strongest=pillarScores.reduce((a,b)=>a.pct>b.pct?a:b);
+  const growth=pillarScores.reduce((a,b)=>a.pct<b.pct?a:b);
+  const who=isTeamMode?`team member rating ${leaderName}`:`${userName}${userRole?', '+userRole:''}`;
+
+  document.getElementById('narrative-wrap').style.display='block';
+  document.getElementById('nh-strong-name').textContent=strongest.pillar.name;
+  document.getElementById('nh-growth-name').textContent=growth.pillar.name;
+
+  const scores=pillarScores.map(ps=>`${ps.pillar.name}: ${ps.total}/${ps.max}`).join(', ');
+  const choices=QUESTIONS.map((q,i)=>{
+    const c=q.options.find(o=>o.val===answers[i]);
+    return `[${PILLARS[q.pillar].short}] ${answers[i]}/4: "${c?.label||''}"`;
+  }).join(' | ');
+
+  try{
+    const resp=await Promise.race([
+      fetch('https://api.anthropic.com/v1/messages',{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({
+          model:'claude-sonnet-4-6',
+          max_tokens:1200,
+          system:'You are a servant leadership coach for Dr. Jeremy Graves. Respond with valid JSON only. No markdown. No extra text. Schema: {"type":"string","foundation":"string","foundationText":"string","growthText":"string","opening":"string","middle":"string","growth":"string","close":"string"}',
+          messages:[{role:'user',content:`Respondent: ${who}. Archetype: ${arch.label} (${total}/96). Strongest: ${strongest.pillar.name} (${strongest.pct}%). Growth edge: ${growth.pillar.name} (${growth.pct}%). Scores: ${scores}. Choices: ${choices}. Write: type=3-5 word leadership identity label. foundation=their strongest pillar name. foundationText=2-3 sentences what this reveals about their character based on actual choices. growthText=2-3 sentences what their lowest pillar choices reveal and what changes if they close it. opening=3-4 warm affirming sentences referencing strongest pillar and specific choices. middle=4-5 sentences on full leadership identity across all pillars and what team experiences. growth=3-4 honest sentences naming growth edge pillar and what closes the gap. close=1-2 memorable mentor sentences. American English, second person.`}]
+        })
+      }),
+      new Promise((_,rej)=>setTimeout(()=>rej(new Error('timeout')),30000))
+    ]);
+    const data=await resp.json();
+    if(data.error) throw new Error(data.error.message);
+    const parsed=JSON.parse((data.content?.[0]?.text||'').trim());
+    document.getElementById('lt-label').textContent=parsed.type||arch.label;
+    document.getElementById('nh-strong-text').textContent=parsed.foundationText||'';
+    document.getElementById('nh-growth-text').textContent=parsed.growthText||'';
+    document.getElementById('n-opening').textContent=parsed.opening||'';
+    const mid=document.getElementById('n-middle'); mid.textContent=parsed.middle||''; mid.style.display='block';
+    const grw=document.getElementById('n-growth'); grw.textContent=parsed.growth||''; grw.style.display='block';
+    const cls=document.getElementById('n-close'); cls.textContent=parsed.close||''; cls.style.display='block';
+  }catch(e){
+    console.error('Narrative error:',e.message);
+    // Simple graceful fallback
+    document.getElementById('lt-label').textContent=arch.label;
+    document.getElementById('nh-strong-text').textContent=`${strongest.pillar.name} is where your servant leadership shows up most consistently and deliberately.`;
+    document.getElementById('nh-growth-text').textContent=`${growth.pillar.name} is your clearest opportunity — closing this gap will change what your team experiences every day.`;
+    document.getElementById('n-opening').textContent=`Your results reveal a leader with real strengths across the Seven Pillars. ${strongest.pillar.name} stands out as your foundation — the area where your servant leadership instincts are most reliably expressed.`;
+    const mid=document.getElementById('n-middle');
+    mid.textContent=`Across your responses, a consistent picture emerges: you lead with intention and care for the people around you. Your pattern shows a leader whose team likely feels supported, seen, and trusted to do their work. The pillars where you score highest reflect habits that are already embedded in how you show up every day.`;
+    mid.style.display='block';
+    const grw=document.getElementById('n-growth');
+    grw.textContent=`Your growth edge is ${growth.pillar.name}. This isn't a weakness — it's the next chapter. Investing deliberately here won't just improve a score; it will deepen the trust your team places in your leadership.`;
+    grw.style.display='block';
+    const cls=document.getElementById('n-close');
+    cls.textContent=`The leaders who grow the most are the ones willing to look honestly at where they are. You're already doing that.`;
+    cls.style.display='block';
+  }
 }
+
 
 // ════════════════════════════════════════════════
 // EMAIL VIA EMAILJS
