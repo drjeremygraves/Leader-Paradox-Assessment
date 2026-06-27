@@ -819,7 +819,6 @@ async function runAnalysis(){
   showScreen('screen-results');
   setTimeout(animatePillars,400);
   setTimeout(sendEmail,1000);
-  setTimeout(generateNarrative,500);
 }
 
 async function generateAIResults(){
@@ -831,45 +830,87 @@ async function generateAIResults(){
   }).join('\n');
   const totalScore=pillarScores.reduce((s,p)=>s+p.total,0);
   const archetype=getArchetype(totalScore);
+  const strongest=pillarScores.reduce((a,b)=>a.pct>b.pct?a:b);
+  const growth=pillarScores.reduce((a,b)=>a.pct<b.pct?a:b);
   const perspective=isTeamMode?`This is a team member's assessment of ${leaderName}'s leadership.`:`This is a self-assessment by ${userName}${userRole?', '+userRole:''}.`;
 
-  const prompt=`You are an expert leadership coach specializing in servant leadership based on Dr. Jeremy Graves' framework "The Leader Paradox" — Seven Pillars: Personal Integrity & Ethics, Others First, Communication & Listening, Collaboration, Leading With the Future in Mind, Self-Care & Mental Health, Continuous Team Development.
+  const prompt=`You are an expert leadership coach for Dr. Jeremy Graves' framework "The Leader Paradox" — Seven Pillars: Personal Integrity & Ethics, Others First, Communication & Listening, Collaboration, Leading With the Future in Mind, Self-Care & Mental Health, Continuous Team Development.
 
 ${perspective}
-Scores: ${scoresSummary}
+Scores:
+${scoresSummary}
 Total: ${totalScore}/96 — Archetype: ${archetype.label}
-Responses: ${qaSummary}
+Strongest pillar: ${strongest.pillar.name} (${strongest.pct}%)
+Growth edge: ${growth.pillar.name} (${growth.pct}%)
+Responses:
+${qaSummary}
 
-Use American English spelling throughout. Respond ONLY with raw JSON, no markdown:
-{"executiveSummary":"3-4 sentences. Direct, professional. Reference specific pillars. Honest but constructive. Second person if self-assessment, third person if team rating.","pillars":[
-{"pillarName":"Personal Integrity & Ethics","score":${pillarScores[0].total},"analysis":"2-3 concrete sentences based on actual choices.","actions":["Action 1","Action 2","Action 3"]},
-{"pillarName":"Others First","score":${pillarScores[1].total},"analysis":"2-3 sentences.","actions":["Action 1","Action 2","Action 3"]},
-{"pillarName":"Communication & Listening","score":${pillarScores[2].total},"analysis":"2-3 sentences.","actions":["Action 1","Action 2","Action 3"]},
-{"pillarName":"Collaboration","score":${pillarScores[3].total},"analysis":"2-3 sentences.","actions":["Action 1","Action 2","Action 3"]},
-{"pillarName":"Leading With the Future in Mind","score":${pillarScores[4].total},"analysis":"2-3 sentences.","actions":["Action 1","Action 2","Action 3"]},
-{"pillarName":"Self-Care & Mental Health","score":${pillarScores[5].total},"analysis":"2-3 sentences.","actions":["Action 1","Action 2","Action 3"]},
-{"pillarName":"Continuous Team Development","score":${pillarScores[6].total},"analysis":"2-3 sentences.","actions":["Action 1","Action 2","Action 3"]}]}`;
+Use American English. Second person (you/your) for self-assessment, third person for team rating. Respond ONLY with raw JSON — no markdown, no code fences, no extra text:
+{
+  "executiveSummary": "3-4 sentences. Direct, professional. Reference specific pillars by name. Honest but constructive.",
+  "narrativeType": "3-5 word evocative leadership identity label based on their full pattern, e.g. The Principled Steady Hand",
+  "narrativeFoundationText": "2-3 sentences: what their strongest pillar score and specific choices reveal about their character.",
+  "narrativeGrowthText": "2-3 sentences: what their lowest pillar choices reveal and what specifically changes if they close this gap.",
+  "narrativeOpening": "3-4 warm affirming sentences referencing the strongest pillar and specific choices they made.",
+  "narrativeMiddle": "4-5 sentences on their full leadership identity across all pillars — what their team likely experiences day to day.",
+  "narrativeGrowth": "3-4 honest but warm sentences naming the growth edge pillar and concrete actions that would close it.",
+  "narrativeClose": "1-2 memorable mentor-tone sentences. Make it worth remembering.",
+  "pillars": [
+    {"pillarName":"Personal Integrity & Ethics","score":${pillarScores[0].total},"analysis":"2-3 concrete sentences based on actual answer choices.","actions":["Action 1","Action 2","Action 3"]},
+    {"pillarName":"Others First","score":${pillarScores[1].total},"analysis":"2-3 sentences.","actions":["Action 1","Action 2","Action 3"]},
+    {"pillarName":"Communication & Listening","score":${pillarScores[2].total},"analysis":"2-3 sentences.","actions":["Action 1","Action 2","Action 3"]},
+    {"pillarName":"Collaboration","score":${pillarScores[3].total},"analysis":"2-3 sentences.","actions":["Action 1","Action 2","Action 3"]},
+    {"pillarName":"Leading With the Future in Mind","score":${pillarScores[4].total},"analysis":"2-3 sentences.","actions":["Action 1","Action 2","Action 3"]},
+    {"pillarName":"Self-Care & Mental Health","score":${pillarScores[5].total},"analysis":"2-3 sentences.","actions":["Action 1","Action 2","Action 3"]},
+    {"pillarName":"Continuous Team Development","score":${pillarScores[6].total},"analysis":"2-3 sentences.","actions":["Action 1","Action 2","Action 3"]}
+  ]
+}`;
 
   const resp=await fetch('https://api.anthropic.com/v1/messages',{
     method:'POST',headers:{'Content-Type':'application/json'},
-    body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1800,messages:[{role:'user',content:prompt}]})
+    body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:2400,messages:[{role:'user',content:prompt}]})
   });
   const data=await resp.json();
-  const parsed=JSON.parse((data.content?.[0]?.text||'').replace(/```json|```/g,'').trim());
+  if(data.error) throw new Error(data.error.message||'API error');
+  const raw=(data.content?.[0]?.text||'').replace(/```json[\s\S]*?```/g,m=>m.slice(7,-3)).replace(/```/g,'').trim();
+  const parsed=JSON.parse(raw);
   pillarAnalyses=parsed.pillars;
   window._aiExecSummary=parsed.executiveSummary;
+  // Store narrative fields for use after results screen builds
+  window._narrative={
+    type:parsed.narrativeType,
+    foundationText:parsed.narrativeFoundationText,
+    growthText:parsed.narrativeGrowthText,
+    opening:parsed.narrativeOpening,
+    middle:parsed.narrativeMiddle,
+    growth:parsed.narrativeGrowth,
+    close:parsed.narrativeClose
+  };
 }
 
 function generateFallbackResults(){
   window._aiExecSummary=null;
+  const _ftotal=pillarScores.reduce((s,p)=>s+p.total,0);
+  const _farch=getArchetype(_ftotal);
+  const _fstrongest=pillarScores.reduce((a,b)=>a.pct>b.pct?a:b);
+  const _fgrowth=pillarScores.reduce((a,b)=>a.pct<b.pct?a:b);
+  window._narrative={
+    type:_farch.label,
+    foundationText:`${_fstrongest.pillar.name} is where your servant leadership shows up most consistently. Your choices in this area reflect genuine habits, not just good intentions.`,
+    growthText:`${_fgrowth.pillar.name} is your clearest opportunity. The patterns in your responses suggest this pillar has not yet become instinctive, and closing that gap will change what your team experiences every day.`,
+    opening:`Your results reveal a leader with real strengths to build on. ${_fstrongest.pillar.name} stands out as your foundation, the area where your servant leadership instincts are most reliably expressed, even under pressure.`,
+    middle:`Across all seven pillars, a consistent picture emerges: you lead with intention and genuine care for the people around you. Your team likely feels supported and trusted to do their work. The pillars where you score highest reflect habits that are already embedded in how you show up day to day.`,
+    growth:`Your growth edge is ${_fgrowth.pillar.name}. This is not a weakness, it is the next chapter of your leadership story. Investing deliberately here will deepen the trust your team places in you and expand your influence as a leader.`,
+    close:`The leaders who grow the most are the ones willing to look honestly at where they are. The fact that you are asking these questions already sets you apart.`
+  };
   pillarAnalyses=pillarScores.map(ps=>{
     const pct=ps.pct;
     let analysis,actions;
     if(pct>=80){
-      analysis=`Responses across ${ps.pillar.name} suggest this is a genuine strength — consistent and deliberate.`;
+      analysis=`Responses across ${ps.pillar.name} suggest this is a genuine strength, consistent and deliberate.`;
       actions=['Continue modeling this pillar visibly for the team','Mentor others in developing this capability','Document what makes this work so it can be shared'];
     }else if(pct>=60){
-      analysis=`Solid foundations in ${ps.pillar.name} but some inconsistency — particularly in high-pressure moments.`;
+      analysis=`Solid foundations in ${ps.pillar.name} but some inconsistency, particularly in high-pressure moments.`;
       actions=['Identify one scenario where this pillar breaks down','Build a prompt or habit to activate it in that scenario','Ask a trusted colleague for honest feedback on this area'];
     }else{
       analysis=`Responses in ${ps.pillar.name} indicate this area requires deliberate development.`;
@@ -950,6 +991,24 @@ function buildResultsScreen(){
     const urlDisplay=document.getElementById('share-url-display');
     if(urlDisplay){ urlDisplay.textContent=shareURL; }
   }
+
+  // Populate narrative from data already fetched in generateAIResults
+  const strongest=pillarScores.reduce((a,b)=>a.pct>b.pct?a:b);
+  const growth=pillarScores.reduce((a,b)=>a.pct<b.pct?a:b);
+  const n=window._narrative||{};
+  document.getElementById('nh-strong-name').textContent=strongest.pillar.name;
+  document.getElementById('nh-growth-name').textContent=growth.pillar.name;
+  document.getElementById('narrative-wrap').style.display='block';
+  document.getElementById('lt-label').textContent=n.type||arch.label;
+  document.getElementById('nh-strong-text').textContent=n.foundationText||'';
+  document.getElementById('nh-growth-text').textContent=n.growthText||'';
+  document.getElementById('n-opening').textContent=n.opening||'';
+  const mid=document.getElementById('n-middle');
+  if(n.middle){mid.textContent=n.middle;mid.style.display='block';}
+  const grw=document.getElementById('n-growth');
+  if(n.growth){grw.textContent=n.growth;grw.style.display='block';}
+  const cls=document.getElementById('n-close');
+  if(n.close){cls.textContent=n.close;cls.style.display='block';}
 }
 
 function toggleCard(i){
@@ -992,67 +1051,6 @@ function copyEmailText(){
     btn.textContent='✓ Copied!';
     setTimeout(()=>{ btn.textContent='Copy Email Text'; },2500);
   });
-}
-
-// ── NARRATIVE ──
-async function generateNarrative(){
-  const total=pillarScores.reduce((s,p)=>s+p.total,0);
-  const arch=getArchetype(total);
-  const strongest=pillarScores.reduce((a,b)=>a.pct>b.pct?a:b);
-  const growth=pillarScores.reduce((a,b)=>a.pct<b.pct?a:b);
-  const who=isTeamMode?`team member rating ${leaderName}`:`${userName}${userRole?', '+userRole:''}`;
-
-  document.getElementById('narrative-wrap').style.display='block';
-  document.getElementById('nh-strong-name').textContent=strongest.pillar.name;
-  document.getElementById('nh-growth-name').textContent=growth.pillar.name;
-
-  const scores=pillarScores.map(ps=>`${ps.pillar.name}: ${ps.total}/${ps.max}`).join(', ');
-  const choices=QUESTIONS.map((q,i)=>{
-    const c=q.options.find(o=>o.val===answers[i]);
-    return `[${PILLARS[q.pillar].short}] ${answers[i]}/4: "${c?.label||''}"`;
-  }).join(' | ');
-
-  try{
-    const resp=await Promise.race([
-      fetch('https://api.anthropic.com/v1/messages',{
-        method:'POST',
-        headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({
-          model:'claude-sonnet-4-6',
-          max_tokens:1200,
-          system:'You are a servant leadership coach for Dr. Jeremy Graves. Respond with valid JSON only. No markdown. No extra text. Schema: {"type":"string","foundation":"string","foundationText":"string","growthText":"string","opening":"string","middle":"string","growth":"string","close":"string"}',
-          messages:[{role:'user',content:`Respondent: ${who}. Archetype: ${arch.label} (${total}/96). Strongest: ${strongest.pillar.name} (${strongest.pct}%). Growth edge: ${growth.pillar.name} (${growth.pct}%). Scores: ${scores}. Choices: ${choices}. Write: type=3-5 word leadership identity label. foundation=their strongest pillar name. foundationText=2-3 sentences what this reveals about their character based on actual choices. growthText=2-3 sentences what their lowest pillar choices reveal and what changes if they close it. opening=3-4 warm affirming sentences referencing strongest pillar and specific choices. middle=4-5 sentences on full leadership identity across all pillars and what team experiences. growth=3-4 honest sentences naming growth edge pillar and what closes the gap. close=1-2 memorable mentor sentences. American English, second person.`}]
-        })
-      }),
-      new Promise((_,rej)=>setTimeout(()=>rej(new Error('timeout')),30000))
-    ]);
-    const data=await resp.json();
-    if(data.error) throw new Error(data.error.message);
-    const parsed=JSON.parse((data.content?.[0]?.text||'').trim());
-    document.getElementById('lt-label').textContent=parsed.type||arch.label;
-    document.getElementById('nh-strong-text').textContent=parsed.foundationText||'';
-    document.getElementById('nh-growth-text').textContent=parsed.growthText||'';
-    document.getElementById('n-opening').textContent=parsed.opening||'';
-    const mid=document.getElementById('n-middle'); mid.textContent=parsed.middle||''; mid.style.display='block';
-    const grw=document.getElementById('n-growth'); grw.textContent=parsed.growth||''; grw.style.display='block';
-    const cls=document.getElementById('n-close'); cls.textContent=parsed.close||''; cls.style.display='block';
-  }catch(e){
-    console.error('Narrative error:',e.message);
-    // Simple graceful fallback
-    document.getElementById('lt-label').textContent=arch.label;
-    document.getElementById('nh-strong-text').textContent=`${strongest.pillar.name} is where your servant leadership shows up most consistently and deliberately.`;
-    document.getElementById('nh-growth-text').textContent=`${growth.pillar.name} is your clearest opportunity — closing this gap will change what your team experiences every day.`;
-    document.getElementById('n-opening').textContent=`Your results reveal a leader with real strengths across the Seven Pillars. ${strongest.pillar.name} stands out as your foundation — the area where your servant leadership instincts are most reliably expressed.`;
-    const mid=document.getElementById('n-middle');
-    mid.textContent=`Across your responses, a consistent picture emerges: you lead with intention and care for the people around you. Your pattern shows a leader whose team likely feels supported, seen, and trusted to do their work. The pillars where you score highest reflect habits that are already embedded in how you show up every day.`;
-    mid.style.display='block';
-    const grw=document.getElementById('n-growth');
-    grw.textContent=`Your growth edge is ${growth.pillar.name}. This isn't a weakness — it's the next chapter. Investing deliberately here won't just improve a score; it will deepen the trust your team places in your leadership.`;
-    grw.style.display='block';
-    const cls=document.getElementById('n-close');
-    cls.textContent=`The leaders who grow the most are the ones willing to look honestly at where they are. You're already doing that.`;
-    cls.style.display='block';
-  }
 }
 
 
