@@ -1,0 +1,1048 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Leader Paradox — Servant Leadership Assessment</title>
+<!-- EmailJS SDK -->
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --blue: #1B3A8C; --blue-dark: #122870; --blue-mid: #1e4199;
+    --gold: #E8B84B; --gold-light: #F5D070;
+    --cream: #F7F4EE; --cream-dark: #EDE9E0;
+    --white: #FFFFFF; --text: #0F1C2E; --muted: #6B7C93; --border: #D4CEBC;
+    --green: #2D7A4F; --amber: #B8860B; --red: #C0392B;
+  }
+  html { scroll-behavior: smooth; }
+  body { font-family:'Inter',sans-serif; background:var(--cream); color:var(--text); min-height:100vh; overflow-x:hidden; }
+
+  /* PROGRESS */
+  #progress-bar-wrap { position:fixed;top:0;left:0;right:0;height:4px;background:rgba(255,255,255,0.1);z-index:200; }
+  #progress-bar { height:100%;background:var(--gold);transition:width 0.4s ease;width:0%; }
+
+  /* SCREENS */
+  .screen { display:none;min-height:100vh;animation:fadeIn 0.45s ease; }
+  .screen.active { display:flex;flex-direction:column; }
+  @keyframes fadeIn { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+
+  /* BRAND BAR */
+  .brand-bar {
+    background:var(--blue-dark); padding:11px 28px;
+    display:flex;align-items:center;justify-content:space-between;
+    border-bottom:2px solid var(--gold); flex-shrink:0; z-index:10;
+  }
+  .brand-left { display:flex;align-items:center;gap:14px; }
+  .jgg-badge {
+    width:42px;height:42px;background:var(--blue);
+    display:flex;align-items:center;justify-content:center;
+    border:2px solid var(--gold); flex-shrink:0;
+  }
+  .jgg-badge span {
+    font-family:'Arial Black',sans-serif;font-weight:900;font-size:13px;
+    color:var(--gold);letter-spacing:1px;
+  }
+  .brand-divider { width:1px;height:30px;background:rgba(232,184,75,0.25); }
+  .brand-book-title { font-family:'Playfair Display',serif;font-size:13px;font-weight:700;color:var(--white);line-height:1.1; }
+  .brand-book-sub { font-size:10px;color:var(--gold);letter-spacing:0.09em;text-transform:uppercase;margin-top:2px; }
+  .brand-right { font-family:'JetBrains Mono',monospace;font-size:10px;color:rgba(232,184,75,0.5);letter-spacing:0.1em;text-transform:uppercase; }
+
+  /* TEAM MODE BANNER */
+  .team-banner {
+    background:var(--gold);padding:12px 24px;text-align:center;
+    font-family:'Inter',sans-serif;font-weight:600;font-size:14px;color:var(--blue-dark);
+    display:none;
+  }
+  .team-banner.show { display:block; }
+
+  /* INTRO */
+  #screen-intro { background:var(--blue);align-items:center;justify-content:flex-start; }
+  .intro-hero {
+    flex:1;display:flex;flex-direction:column;align-items:center;
+    justify-content:center;padding:52px 24px 36px;text-align:center;
+  }
+  .intro-triangle { width:80px;height:80px;margin-bottom:28px; }
+  .intro-triangle svg { width:100%;height:100%; }
+  .intro-eyebrow { font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.22em;color:var(--gold);text-transform:uppercase;margin-bottom:18px; }
+  .intro-title { font-family:'Playfair Display',serif;font-size:clamp(30px,6vw,56px);color:var(--white);line-height:1.08;margin-bottom:6px;font-weight:700; }
+  .intro-subtitle { font-family:'Playfair Display',serif;font-size:clamp(13px,1.8vw,17px);color:var(--gold);font-style:italic;margin-bottom:26px; }
+  .intro-desc { max-width:500px;margin:0 auto 40px;color:rgba(183,210,240,0.85);font-size:15px;line-height:1.75; }
+  .pillar-chips { display:flex;gap:6px;justify-content:center;margin-bottom:40px;flex-wrap:wrap;max-width:540px; }
+  .pillar-chip { background:rgba(232,184,75,0.1);border:1px solid rgba(232,184,75,0.28);color:var(--gold);font-size:10px;padding:5px 11px;font-family:'JetBrains Mono',monospace;letter-spacing:0.06em; }
+  .intro-stats { display:flex;gap:36px;justify-content:center;margin-bottom:44px;flex-wrap:wrap; }
+  .intro-stat { text-align:center; }
+  .intro-stat-num { font-family:'JetBrains Mono',monospace;font-size:24px;font-weight:600;color:var(--gold);display:block; }
+  .intro-stat-label { font-size:10px;color:rgba(183,210,240,0.6);text-transform:uppercase;letter-spacing:0.1em;margin-top:3px; }
+  .btn-primary { background:var(--gold);color:var(--blue-dark);border:none;padding:15px 48px;font-family:'Inter',sans-serif;font-weight:700;font-size:14px;letter-spacing:0.06em;cursor:pointer;transition:all 0.2s;text-transform:uppercase; }
+  .btn-primary:hover { background:var(--gold-light);transform:translateY(-1px); }
+  .intro-footer { padding:18px 24px;border-top:1px solid rgba(232,184,75,0.12);text-align:center;flex-shrink:0; }
+  .intro-footer-text { font-size:11px;color:rgba(183,210,240,0.35);font-family:'JetBrains Mono',monospace;letter-spacing:0.06em; }
+
+  /* NAME SCREEN */
+  #screen-name { background:var(--cream);align-items:stretch; }
+  .name-body { flex:1;display:flex;align-items:center;justify-content:center;padding:52px 24px; }
+  .name-box { max-width:460px;width:100%;text-align:center; }
+  .name-box h2 { font-family:'Playfair Display',serif;font-size:28px;margin-bottom:10px;color:var(--blue); }
+  .name-box p { color:var(--muted);margin-bottom:28px;font-size:14px;line-height:1.6; }
+  .field-label { font-family:'JetBrains Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:0.12em;color:var(--muted);text-align:left;margin-bottom:5px;display:block; }
+  .field-wrap { margin-bottom:16px; }
+  .f-input {
+    width:100%;padding:12px 15px;border:2px solid var(--border);background:var(--white);
+    font-family:'Inter',sans-serif;font-size:14px;color:var(--blue);outline:none;transition:border-color 0.2s;
+  }
+  .f-input:focus { border-color:var(--gold); }
+  .f-input::placeholder { color:#C0B8A8; }
+  .f-input.large { font-family:'Playfair Display',serif;font-size:19px; }
+  .email-note { font-size:11px;color:var(--muted);font-style:italic;text-align:left;margin-bottom:24px;line-height:1.5; }
+
+  /* QUESTION */
+  #screen-question { background:var(--cream);align-items:stretch; }
+  .q-header { background:var(--blue);padding:16px 26px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0; }
+  .q-pillar-label { font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--gold);letter-spacing:0.15em;text-transform:uppercase; }
+  .q-pillar-sub { font-family:'JetBrains Mono',monospace;font-size:10px;color:rgba(232,184,75,0.45);letter-spacing:0.08em; }
+  .q-body { flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px 20px;max-width:680px;margin:0 auto;width:100%; }
+  .q-pillar-name { font-family:'Playfair Display',serif;font-style:italic;font-size:13px;color:var(--gold);margin-bottom:16px;text-align:center; }
+  .q-text { font-family:'Playfair Display',serif;font-size:clamp(17px,2.8vw,24px);color:var(--blue);line-height:1.45;text-align:center;margin-bottom:36px;font-weight:600; }
+  .q-scale { display:flex;flex-direction:column;align-items:stretch;gap:9px;width:100%; }
+  .scale-option { display:flex;align-items:flex-start;gap:14px;padding:14px 16px;cursor:pointer;border:2px solid var(--border);background:var(--white);transition:all 0.15s;text-align:left; }
+  .scale-option:hover { border-color:var(--gold);background:#FDFBF6; }
+  .scale-option.selected { border-color:var(--gold);background:rgba(232,184,75,0.07); }
+  .scale-letter { font-family:'JetBrains Mono',monospace;font-weight:600;font-size:14px;color:var(--gold);min-width:18px;flex-shrink:0;margin-top:1px; }
+  .scale-label { font-size:14px;color:var(--text);line-height:1.5; }
+  .q-nav { padding:18px 26px;display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--border);flex-shrink:0; }
+  .btn-back { background:none;border:1px solid var(--border);color:var(--muted);padding:9px 20px;font-family:'Inter',sans-serif;font-size:13px;cursor:pointer;transition:all 0.2s; }
+  .btn-back:hover { border-color:var(--muted); }
+  .btn-next { background:var(--blue);color:var(--white);border:none;padding:11px 32px;font-family:'Inter',sans-serif;font-weight:600;font-size:13px;cursor:pointer;transition:all 0.2s;opacity:0.3;pointer-events:none; }
+  .btn-next.ready { opacity:1;pointer-events:all; }
+  .btn-next.ready:hover { background:var(--blue-mid); }
+
+  /* LOADING */
+  #screen-loading { background:var(--blue);align-items:center;justify-content:center;text-align:center;padding:40px; }
+  .loading-title { font-family:'Playfair Display',serif;font-size:24px;color:var(--white);margin-bottom:10px; }
+  .loading-sub { color:rgba(183,210,240,0.6);font-size:13px;margin-bottom:44px; }
+  .loading-pillars { display:flex;gap:9px;align-items:flex-end;justify-content:center;height:80px;margin-bottom:24px; }
+  .load-bar { width:26px;background:rgba(232,184,75,0.15);border-radius:2px;position:relative;overflow:hidden; }
+  .load-bar-fill { position:absolute;bottom:0;left:0;right:0;background:var(--gold);border-radius:2px;animation:barFill 2s ease-in-out infinite; }
+  .load-bar:nth-child(1) .load-bar-fill{animation-delay:0s} .load-bar:nth-child(2) .load-bar-fill{animation-delay:.15s}
+  .load-bar:nth-child(3) .load-bar-fill{animation-delay:.3s} .load-bar:nth-child(4) .load-bar-fill{animation-delay:.45s}
+  .load-bar:nth-child(5) .load-bar-fill{animation-delay:.6s} .load-bar:nth-child(6) .load-bar-fill{animation-delay:.75s}
+  .load-bar:nth-child(7) .load-bar-fill{animation-delay:.9s}
+  @keyframes barFill { 0%,100%{height:15%} 50%{height:92%} }
+  .loading-msg { color:var(--gold);font-size:13px;font-style:italic;min-height:20px; }
+
+  /* RESULTS */
+  #screen-results { background:var(--cream);align-items:stretch; }
+  .results-hero { background:var(--blue);padding:48px 28px 40px;text-align:center; }
+  .results-eyebrow { font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--gold);letter-spacing:0.22em;text-transform:uppercase;margin-bottom:12px; }
+  .results-name { font-family:'Playfair Display',serif;font-size:clamp(24px,5vw,42px);color:var(--white);margin-bottom:6px; }
+  .results-archetype { font-family:'Playfair Display',serif;font-style:italic;font-size:clamp(14px,2.2vw,20px);color:var(--gold);margin-bottom:26px; }
+  .score-wrap { display:inline-flex;flex-direction:column;align-items:center;border:1px solid rgba(232,184,75,0.35);padding:20px 44px;margin-bottom:12px; }
+  .score-num { font-family:'JetBrains Mono',monospace;font-size:56px;font-weight:600;color:var(--gold);line-height:1; }
+  .score-denom { font-family:'JetBrains Mono',monospace;font-size:13px;color:rgba(183,210,240,0.45); }
+  .score-label { font-size:10px;color:rgba(183,210,240,0.45);text-transform:uppercase;letter-spacing:0.1em;margin-top:6px; }
+  .results-desc { max-width:560px;margin:18px auto 0;color:rgba(183,210,240,0.8);font-size:14px;line-height:1.75; }
+
+  /* Email notice */
+  .email-notice { max-width:780px;margin:0 auto;padding:24px 24px 0; }
+  .email-card { padding:15px 18px;display:flex;align-items:flex-start;gap:12px; }
+  .email-card.success { background:rgba(45,122,79,0.08);border:1px solid rgba(45,122,79,0.25); }
+  .email-card.pending { background:rgba(232,184,75,0.08);border:1px solid rgba(232,184,75,0.3); }
+  .email-icon { font-size:16px;flex-shrink:0;margin-top:1px; }
+  .email-text { font-size:13px;line-height:1.55; }
+  .email-text a { font-weight:600;text-decoration:underline; }
+
+  /* AI Summary */
+  .ai-summary-wrap { max-width:780px;margin:0 auto;padding:36px 24px 0; }
+  .ai-card { background:var(--white);border:1px solid var(--border);padding:26px;margin-bottom:24px; }
+  .ai-eyebrow { font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.15em;color:var(--gold);text-transform:uppercase;margin-bottom:12px; }
+  .ai-text { font-size:15px;line-height:1.8;color:var(--text); }
+  .ai-loading { display:flex;align-items:center;gap:8px;padding:12px;background:var(--cream-dark);font-size:13px;color:var(--muted); }
+  .ai-dot { width:6px;height:6px;background:var(--gold);border-radius:50%;animation:pulse 1.2s ease-in-out infinite; }
+  .ai-dot:nth-child(2){animation-delay:.2s} .ai-dot:nth-child(3){animation-delay:.4s}
+  @keyframes pulse { 0%,100%{opacity:.25} 50%{opacity:1} }
+
+  /* Pillar viz */
+  .pillars-viz { max-width:780px;margin:0 auto;padding:40px 24px 0; }
+  .pillars-viz-title { font-family:'Playfair Display',serif;font-size:20px;color:var(--blue);margin-bottom:24px;text-align:center; }
+  .cols-wrap { display:flex;gap:9px;align-items:flex-end;height:170px;margin-bottom:10px; }
+  .col-item { flex:1;display:flex;flex-direction:column;align-items:center;gap:5px; }
+  .col-bar-outer { width:100%;flex:1;background:var(--cream-dark);position:relative;border:1px solid var(--border); }
+  .col-bar-inner { position:absolute;bottom:0;left:0;right:0;transition:height 1.2s cubic-bezier(0.22,1,0.36,1); }
+  .col-score { font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:600;color:var(--text); }
+  .col-name { font-size:7px;text-align:center;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em;line-height:1.3;max-width:52px; }
+
+  /* Pillar cards */
+  .pillar-cards { max-width:780px;margin:0 auto;padding:10px 24px 52px; }
+  .pillar-card { border:1px solid var(--border);background:var(--white);margin-bottom:14px;overflow:hidden; }
+  .pillar-card-hd { display:flex;align-items:center;gap:12px;padding:16px 20px;cursor:pointer;transition:background 0.15s;border-bottom:1px solid transparent; }
+  .pillar-card-hd:hover { background:#FDFBF6; }
+  .pillar-card.open .pillar-card-hd { border-bottom-color:var(--border); }
+  .pc-num { font-family:'JetBrains Mono',monospace;font-weight:600;font-size:17px;color:var(--gold);min-width:28px; }
+  .pc-name { font-family:'Playfair Display',serif;font-size:15px;color:var(--blue);flex:1; }
+  .pc-score { font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:600;padding:3px 9px; }
+  .pc-chevron { color:var(--muted);font-size:11px;transition:transform 0.2s; }
+  .pillar-card.open .pc-chevron { transform:rotate(180deg); }
+  .pillar-card-bd { padding:20px;display:none; }
+  .pillar-card-bd.open { display:block;animation:fadeIn 0.25s ease; }
+  .pc-analysis { font-size:14px;line-height:1.78;color:var(--text);margin-bottom:16px; }
+  .pc-actions-title { font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.15em;text-transform:uppercase;color:var(--gold);margin-bottom:9px; }
+  .action-row { display:flex;gap:10px;margin-bottom:9px;align-items:flex-start; }
+  .action-dot { width:5px;height:5px;background:var(--gold);margin-top:7px;flex-shrink:0; }
+  .action-txt { font-size:13px;line-height:1.6;color:var(--text); }
+
+  /* Share section */
+  .share-section { background:var(--blue-dark);padding:44px 24px;text-align:center; }
+  .share-title { font-family:'Playfair Display',serif;font-size:22px;color:var(--white);margin-bottom:8px; }
+  .share-desc { color:rgba(183,210,240,0.7);font-size:14px;margin-bottom:24px;max-width:440px;margin-left:auto;margin-right:auto; }
+
+  /* Share link box */
+  .share-link-box { display:inline-flex;max-width:480px;width:100%;margin-bottom:16px; }
+  .share-link-input {
+    flex:1;background:rgba(255,255,255,0.06);border:2px solid rgba(232,184,75,0.4);
+    color:var(--gold);padding:11px 13px;font-family:'JetBrains Mono',monospace;font-size:12px;
+    outline:none;border-right:none;min-width:0;cursor:pointer;
+  }
+  .share-link-input:focus { border-color:var(--gold); }
+  .btn-copy { background:var(--gold);color:var(--blue-dark);border:none;padding:11px 18px;font-family:'Inter',sans-serif;font-weight:700;font-size:12px;cursor:pointer;white-space:nowrap;transition:background 0.2s;flex-shrink:0; }
+  .btn-copy:hover { background:var(--gold-light); }
+  .share-note { font-size:11px;color:rgba(183,210,240,0.38);font-style:italic; }
+
+  /* Footer */
+  .site-footer { background:var(--blue-dark);border-top:1px solid rgba(232,184,75,0.12);padding:18px 24px;text-align:center; }
+  .site-footer-text { font-size:11px;color:rgba(183,210,240,0.3);font-family:'JetBrains Mono',monospace;letter-spacing:0.05em; }
+
+  /* SETUP NOTICE (shown if EmailJS not configured) */
+  .setup-notice {
+    position:fixed;bottom:20px;right:20px;background:var(--blue-dark);
+    border:1px solid var(--gold);padding:16px 20px;max-width:320px;
+    font-size:12px;color:rgba(183,210,240,0.85);line-height:1.6;z-index:999;
+    display:none;
+  }
+  .setup-notice strong { color:var(--gold); }
+  .setup-notice .close-btn { cursor:pointer;float:right;color:var(--gold);font-size:16px;margin-left:8px;line-height:1; }
+
+  @media(max-width:600px){
+    .cols-wrap{height:120px;gap:4px} .col-name{font-size:6px;max-width:32px}
+    .q-body{padding:20px 12px} .brand-right{display:none}
+    .share-link-input{font-size:10px}
+  }
+</style>
+</head>
+<body>
+<div id="progress-bar-wrap"><div id="progress-bar"></div></div>
+
+<!-- Setup notice (shown if EmailJS not yet configured) -->
+<div class="setup-notice" id="setup-notice">
+  <span class="close-btn" onclick="this.parentElement.style.display='none'">×</span>
+  <strong>⚙️ Email Setup Needed</strong><br>
+  To enable auto-email, add your EmailJS keys to the top of this file's script section. See the setup guide inside the code.
+</div>
+
+<!-- ═══════════════════ INTRO ═══════════════════ -->
+<div class="screen active" id="screen-intro">
+  <div class="brand-bar">
+    <div class="brand-left">
+      <div class="jgg-badge"><span>JGG</span></div>
+      <div class="brand-divider"></div>
+      <div><div class="brand-book-title">The Leader Paradox</div><div class="brand-book-sub">Dr. Jeremy Graves</div></div>
+    </div>
+    <div class="brand-right">Assessment Tool</div>
+  </div>
+  <div class="team-banner" id="intro-team-banner"></div>
+  <div class="intro-hero">
+    <div class="intro-triangle">
+      <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <polygon points="40,4 78,76 2,76" stroke="#E8B84B" stroke-width="2.5" fill="none"/>
+        <polygon points="40,18 66,68 14,68" stroke="white" stroke-width="1.2" fill="none" opacity="0.25"/>
+      </svg>
+    </div>
+    <div class="intro-eyebrow" id="intro-eyebrow">Dr. Jeremy Graves · JGG Leadership</div>
+    <h1 class="intro-title" id="intro-title">Servant Leadership<br>Assessment</h1>
+    <p class="intro-subtitle">The Unexpected Path to Effective Leadership</p>
+    <p class="intro-desc" id="intro-desc">Answer 24 scenario-based questions to discover how you lead across the Seven Pillars of Servant Leadership — then invite your team to rate you and see where perception and reality diverge.</p>
+    <div class="pillar-chips">
+      <span class="pillar-chip">Integrity</span><span class="pillar-chip">Others First</span>
+      <span class="pillar-chip">Communication</span><span class="pillar-chip">Collaboration</span>
+      <span class="pillar-chip">Foresight</span><span class="pillar-chip">Self-Care</span>
+      <span class="pillar-chip">Team Development</span>
+    </div>
+    <div class="intro-stats">
+      <div class="intro-stat"><span class="intro-stat-num">24</span><span class="intro-stat-label">Questions</span></div>
+      <div class="intro-stat"><span class="intro-stat-num">7</span><span class="intro-stat-label">Pillars</span></div>
+      <div class="intro-stat"><span class="intro-stat-num">~8</span><span class="intro-stat-label">Minutes</span></div>
+    </div>
+    <button class="btn-primary" onclick="showScreen('screen-name')">Begin Assessment →</button>
+  </div>
+  <div class="intro-footer"><span class="intro-footer-text">© Dr. Jeremy Graves · JGG Leadership · Based on The Leader Paradox</span></div>
+</div>
+
+<!-- ═══════════════════ NAME ═══════════════════ -->
+<div class="screen" id="screen-name">
+  <div class="brand-bar">
+    <div class="brand-left">
+      <div class="jgg-badge"><span>JGG</span></div>
+      <div class="brand-divider"></div>
+      <div><div class="brand-book-title">The Leader Paradox</div><div class="brand-book-sub">Dr. Jeremy Graves</div></div>
+    </div>
+    <div class="brand-right">Step 1 of 2</div>
+  </div>
+  <div class="name-body">
+    <div class="name-box">
+      <h2 id="name-screen-title">Before we begin</h2>
+      <p id="name-screen-desc">Your results will be personalized to you. Enter your details below.</p>
+      <div class="field-wrap"><label class="field-label">Your Name *</label><input class="f-input large" id="input-name" type="text" placeholder="Full name" autocomplete="off"/></div>
+      <div class="field-wrap"><label class="field-label">Role / Title</label><input class="f-input" id="input-role" type="text" placeholder="e.g. Director of Operations (optional)" autocomplete="off"/></div>
+      <div class="field-wrap" id="email-field-wrap">
+        <label class="field-label">Your Email</label>
+        <input class="f-input" id="input-email" type="email" placeholder="your@email.com (optional)" autocomplete="off"/>
+      </div>
+      <p class="email-note" id="email-note-text">A copy of your results will be sent to you and to Dr. Jeremy Graves automatically when you finish.</p>
+      <button class="btn-primary" onclick="startAssessment()" style="width:100%;">Continue →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════ QUESTION ═══════════════════ -->
+<div class="screen" id="screen-question">
+  <div class="brand-bar">
+    <div class="brand-left">
+      <div class="jgg-badge"><span>JGG</span></div>
+      <div class="brand-divider"></div>
+      <div><div class="brand-book-title">The Leader Paradox</div><div class="brand-book-sub">Dr. Jeremy Graves</div></div>
+    </div>
+    <div class="brand-right" id="q-counter">1 / 24</div>
+  </div>
+  <div class="q-header">
+    <span class="q-pillar-label" id="q-pillar-label">Pillar 1 of 7</span>
+    <span class="q-pillar-sub" id="q-pillar-sub"></span>
+  </div>
+  <div class="q-body">
+    <div class="q-pillar-name" id="q-pillar-name"></div>
+    <div class="q-text" id="q-text"></div>
+    <div class="q-scale" id="q-scale"></div>
+  </div>
+  <div class="q-nav">
+    <button class="btn-back" id="btn-back" onclick="prevQuestion()">← Back</button>
+    <button class="btn-next" id="btn-next" onclick="nextQuestion()">Next →</button>
+  </div>
+</div>
+
+<!-- ═══════════════════ LOADING ═══════════════════ -->
+<div class="screen" id="screen-loading">
+  <div class="loading-title">Analyzing your results</div>
+  <div class="loading-sub">Generating personalized insights across all seven pillars</div>
+  <div class="loading-pillars">
+    <div class="load-bar" style="height:80px"><div class="load-bar-fill"></div></div>
+    <div class="load-bar" style="height:80px"><div class="load-bar-fill"></div></div>
+    <div class="load-bar" style="height:80px"><div class="load-bar-fill"></div></div>
+    <div class="load-bar" style="height:80px"><div class="load-bar-fill"></div></div>
+    <div class="load-bar" style="height:80px"><div class="load-bar-fill"></div></div>
+    <div class="load-bar" style="height:80px"><div class="load-bar-fill"></div></div>
+    <div class="load-bar" style="height:80px"><div class="load-bar-fill"></div></div>
+  </div>
+  <div class="loading-msg" id="loading-msg">Reviewing your integrity patterns…</div>
+</div>
+
+<!-- ═══════════════════ RESULTS ═══════════════════ -->
+<div class="screen" id="screen-results">
+  <div class="brand-bar">
+    <div class="brand-left">
+      <div class="jgg-badge"><span>JGG</span></div>
+      <div class="brand-divider"></div>
+      <div><div class="brand-book-title">The Leader Paradox</div><div class="brand-book-sub">Dr. Jeremy Graves</div></div>
+    </div>
+    <div class="brand-right">Your Results</div>
+  </div>
+  <div class="results-hero">
+    <div class="results-eyebrow" id="results-eyebrow">Assessment Complete</div>
+    <div class="results-name" id="results-name"></div>
+    <div class="results-archetype" id="results-archetype"></div>
+    <div class="score-wrap">
+      <div class="score-num" id="score-num">—</div>
+      <div class="score-denom">out of 96</div>
+      <div class="score-label">Overall Servant Leadership Score</div>
+    </div>
+    <div class="results-desc" id="results-desc"></div>
+  </div>
+
+  <div class="email-notice" id="email-notice" style="display:none">
+    <div class="email-card" id="email-card">
+      <div class="email-icon">✉️</div>
+      <div class="email-text" id="email-text"></div>
+    </div>
+  </div>
+
+  <div class="ai-summary-wrap">
+    <div class="ai-card">
+      <div class="ai-eyebrow">Executive Summary</div>
+      <div class="ai-text" id="ai-exec-text">
+        <div class="ai-loading"><div class="ai-dot"></div><div class="ai-dot"></div><div class="ai-dot"></div><span>Generating personalized summary…</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="pillars-viz">
+    <div class="pillars-viz-title">Your Seven Pillars</div>
+    <div class="cols-wrap" id="cols-wrap"></div>
+  </div>
+
+  <div class="pillar-cards" id="pillar-cards"></div>
+
+  <div class="share-section" id="share-section" style="display:none">
+    <div class="share-title">Invite your team to rate you</div>
+    <div class="share-desc">Copy the link below and paste it into an email to your direct reports. When they open it, they'll answer the same 24 questions about <em>your</em> leadership. You'll see exactly where your self-perception and their experience diverge.</div>
+    <div class="share-link-box">
+      <input class="share-link-input" id="share-link" readonly onclick="this.select()" />
+      <button class="btn-copy" id="btn-copy" onclick="copyShareLink()">Copy Link</button>
+    </div>
+    <div style="margin-bottom:16px;">
+      <a id="share-link-anchor" href="#" target="_blank" style="color:var(--gold);font-size:12px;font-family:'JetBrains Mono',monospace;text-decoration:underline;">Open link to test it →</a>
+    </div>
+    <div class="share-note">Team members' responses are anonymous. The link works on any device.</div>
+  </div>
+
+  <div class="site-footer">
+    <div class="site-footer-text">© Dr. Jeremy Graves · JGG Leadership · The Leader Paradox · drjeremygraves@gmail.com</div>
+  </div>
+</div>
+
+<script>
+// ════════════════════════════════════════════════
+// EMAILJS CONFIGURATION
+// ════════════════════════════════════════════════
+// SETUP STEPS (takes ~10 minutes):
+// 1. Go to https://www.emailjs.com and create a free account
+// 2. Add a new Email Service → connect your Gmail → copy the Service ID
+// 3. Create a new Email Template → copy the Template ID
+//    In the template, use these variables:
+//      {{to_email}}  {{to_name}}  {{subject}}  {{message}}
+// 4. Go to Account → API Keys → copy your Public Key
+// 5. Paste all three values below and remove the placeholder text
+
+const EMAILJS_SERVICE_ID  = 'service_g2bh6vg';
+const EMAILJS_TEMPLATE_ID = 'template_ip6jikg';
+const EMAILJS_PUBLIC_KEY  = 'Fmea8zMGvYfVPH5bL';
+const EMAILJS_CONFIGURED  = (EMAILJS_SERVICE_ID !== 'YOUR_SERVICE_ID');
+
+const ADMIN_EMAIL = 'drjeremygraves@gmail.com';
+
+// ════════════════════════════════════════════════
+// DATA
+// ════════════════════════════════════════════════
+const PILLARS = [
+  {id:'p1',name:'Personal Integrity & Ethics',     short:'Integrity'},
+  {id:'p2',name:'Others First',                     short:'Others First'},
+  {id:'p3',name:'Communication & Listening',        short:'Communication'},
+  {id:'p4',name:'Collaboration',                    short:'Collaboration'},
+  {id:'p5',name:'Leading With the Future in Mind',  short:'Foresight'},
+  {id:'p6',name:'Self-Care & Mental Health',        short:'Self-Care'},
+  {id:'p7',name:'Continuous Team Development',      short:'Team Dev'},
+];
+const PILLAR_COLORS=['#1B3A8C','#2457B3','#3570D4','#4A8B9E','#E8B84B','#C9A84C','#A08030'];
+const ARCHETYPES=[
+  {min:0, max:36,label:'The Unaware Leader',   desc:'Your patterns suggest leadership habits that lean more hierarchical than you may intend. Awareness is always the first and most important step.'},
+  {min:37,max:56,label:'The Emerging Servant', desc:'You have the instincts but the practice is inconsistent. You understand servant leadership conceptually — the gap is in sustained behavior under pressure.'},
+  {min:57,max:76,label:'The Practicing Servant',desc:'You demonstrate servant leadership meaningfully across most pillars. The work now is consistency and closing the specific gaps your results reveal.'},
+  {min:77,max:96,label:'The Servant Exemplar', desc:'Your patterns reflect deep, consistent servant leadership. Your greatest lever now is developing others to lead the same way.'},
+];
+
+const QUESTIONS=[
+  // ── PILLAR 1: PERSONAL INTEGRITY & ETHICS ──
+  {pillar:0,text:"You make a call on a project that turns out to be wrong — the team hits a wall because of your decision. What happens next?",options:[
+    {val:1,label:"I redirect the team toward fixing the problem and move on — dwelling on it isn't productive."},
+    {val:2,label:"I acknowledge to close colleagues that it didn't work out, but keep it brief with the wider team."},
+    {val:3,label:"I own it clearly in front of the team, explain what I misread, and outline what we're doing differently."},
+    {val:4,label:"I own it publicly, invite the team to help diagnose what went wrong, and use it as a shared learning moment."}
+  ]},
+  {pillar:0,text:"A senior leader asks you to present results to your team in a way that downplays a real problem. They frame it as 'keeping morale up.' What do you do?",options:[
+    {val:1,label:"I present it as asked — it's not my place to override a decision from above."},
+    {val:2,label:"I present it largely as asked but soften it slightly less than they suggested."},
+    {val:3,label:"I push back privately with the senior leader and negotiate a more honest framing before presenting."},
+    {val:4,label:"I tell my team the full picture, including the constraints I'm working within — even if that creates tension upward."}
+  ]},
+  {pillar:0,text:"A high-performing, well-liked team member is cutting corners on a compliance process you're responsible for. Someone flags it to you quietly. What do you do?",options:[
+    {val:1,label:"I watch more closely for a while to build a clearer picture before doing anything."},
+    {val:2,label:"I raise it with HR or a peer to get advice before approaching the person directly."},
+    {val:3,label:"I speak to the person directly and privately — their performance doesn't change the standard."},
+    {val:4,label:"I address it directly with the person, document it, and use it as a moment to reinforce standards with the whole team."}
+  ]},
+  {pillar:0,text:"In a senior meeting, a successful outcome gets attributed to you — but it was actually driven by one of your team members. What do you do?",options:[
+    {val:1,label:"I accept the recognition — my team's wins reflect on me as their leader."},
+    {val:2,label:"I mention my team in passing but don't want to make it awkward by being too specific."},
+    {val:3,label:"I correct it clearly: name the team member and redirect the credit to them in the room."},
+    {val:4,label:"I correct it, name the team member, and follow up afterward to make sure they hear that I did."}
+  ]},
+  // ── PILLAR 2: OTHERS FIRST ──
+  {pillar:1,text:"A strong team member asks for two days off during a critical deadline week. They don't give details but seem distressed. What do you do?",options:[
+    {val:1,label:"I explain the timing is difficult and ask if they can wait until after the deadline."},
+    {val:2,label:"I approve the time but ask them to brief a colleague before they go so we're covered."},
+    {val:3,label:"I approve it without hesitation and quietly redistribute the work without making them feel guilty."},
+    {val:4,label:"I approve it immediately, check in to make sure they're okay, and handle coverage myself so they're not worrying about the team."}
+  ]},
+  {pillar:1,text:"You're presenting your team's results to executive leadership. The project went well. How do you tell the story?",options:[
+    {val:1,label:"I present our collective results — I represent the team in these meetings."},
+    {val:2,label:"I give a general nod to the team's effort before getting into the numbers."},
+    {val:3,label:"I name specific team members and what they contributed before presenting the outcome."},
+    {val:4,label:"I structure the whole presentation around individual contributions and ask the exec team to recognize specific people by name."}
+  ]},
+  {pillar:1,text:"You notice a team member seems disengaged and withdrawn lately, but they haven't brought anything to you. What do you do?",options:[
+    {val:1,label:"I wait — if something is wrong, it's their responsibility to raise it."},
+    {val:2,label:"I mention informally: 'Let me know if you ever need anything.'"},
+    {val:3,label:"I find a quiet moment to check in directly: 'I've noticed you seem a bit off — is everything okay?'"},
+    {val:4,label:"I check in directly, create genuine space for them to talk, and adjust their workload or support — whether the issue is work-related or not."}
+  ]},
+  // ── PILLAR 3: COMMUNICATION & LISTENING ──
+  {pillar:2,text:"A team member comes to you with a problem they're stuck on. What does your response typically look like?",options:[
+    {val:1,label:"I listen briefly and give them my answer — they came to me because they want direction."},
+    {val:2,label:"I listen, then suggest two or three ways they could approach it."},
+    {val:3,label:"I ask a few questions to understand the full situation before offering any perspective."},
+    {val:4,label:"I ask questions until they've fully articulated it, then help them arrive at their own solution — only offering my view if they're genuinely stuck."}
+  ]},
+  {pillar:2,text:"You finish presenting a significant change to the team. The room goes quiet. What do you do?",options:[
+    {val:1,label:"I wrap up and send a follow-up email summarizing the key points."},
+    {val:2,label:"I ask 'Any questions?' and take the silence as a sign they've understood."},
+    {val:3,label:"I call on specific people to reflect back what they heard and surface any concerns."},
+    {val:4,label:"I give pairs five minutes to discuss their reactions, then open the floor — the silence tells me something and I want to know what."}
+  ]},
+  {pillar:2,text:"A team member is explaining a problem at length. You already have a clear view on the solution halfway through. What do you do?",options:[
+    {val:1,label:"I interrupt politely to share the solution — it saves everyone's time."},
+    {val:2,label:"I let them finish but I'm already formulating my response while they speak."},
+    {val:3,label:"I wait until they're done, confirm I understood correctly, then respond."},
+    {val:4,label:"I wait, give them space to fully land their point, ask a follow-up question — and only then share my perspective."}
+  ]},
+  {pillar:2,text:"You share a decision in a team meeting. One team member visibly disagrees but says nothing. What do you do?",options:[
+    {val:1,label:"I note the expression but continue — if they have a concern, they can raise it after."},
+    {val:2,label:"I check in with them privately afterward to see if they're on board."},
+    {val:3,label:"I pause and invite them directly: 'I notice you might see this differently — I'd like to hear it.'"},
+    {val:4,label:"I pause, invite their perspective openly, and signal to the whole team that disagreement is part of how we make good decisions."}
+  ]},
+  // ── PILLAR 4: COLLABORATION ──
+  {pillar:3,text:"You need to make a significant decision affecting the whole team. The timeline is tight. What does your process look like?",options:[
+    {val:1,label:"I make the call — that's what leadership is for, especially under time pressure."},
+    {val:2,label:"I consult one or two trusted people on my team before deciding."},
+    {val:3,label:"I pull together a small group closest to the issue and get their input before deciding."},
+    {val:4,label:"I run a rapid input session with the broader team, synthesize what I hear, and explain how it shaped the decision — even where I couldn't act on every view."}
+  ]},
+  {pillar:3,text:"Your team solves a complex problem completely independently while you were heads-down on something else. How do you feel about that?",options:[
+    {val:1,label:"Slightly uneasy — I should have been across it."},
+    {val:2,label:"Relieved — it worked out, which is what matters."},
+    {val:3,label:"Proud — this is exactly the kind of team I want to build."},
+    {val:4,label:"Genuinely thrilled — and I tell them that their ability to operate without me is a leadership success, not a gap."}
+  ]},
+  {pillar:3,text:"A junior team member challenges your approach to a project in a team meeting. Their point has merit but the way they raise it is blunt. What happens?",options:[
+    {val:1,label:"I address the manner first — feedback should be given respectfully — and return to the idea later."},
+    {val:2,label:"I acknowledge their view briefly, move on, and follow up privately after."},
+    {val:3,label:"I engage with the idea directly in the room, separate from how it was delivered."},
+    {val:4,label:"I engage with the idea fully, affirm that this kind of challenge is exactly what good teams do, and adjust my approach if their point is sound."}
+  ]},
+  // ── PILLAR 5: LEADING WITH THE FUTURE IN MIND ──
+  {pillar:4,text:"Your week is packed with back-to-back operational demands. A strategic planning task keeps getting pushed. What actually happens?",options:[
+    {val:1,label:"It waits — the operational demands are real and have to come first."},
+    {val:2,label:"I try to carve out time for it but it rarely materializes the way I intend."},
+    {val:3,label:"I protect two to three hours of strategic thinking time in my calendar each week and treat it as non-negotiable."},
+    {val:4,label:"I have a dedicated weekly rhythm for strategic thinking and use that time to actively involve my team in shaping what's ahead."}
+  ]},
+  {pillar:4,text:"You spot an early warning sign — a retention pattern, a capability gap, a market shift — that isn't yet a crisis. What do you do?",options:[
+    {val:1,label:"I note it but wait until it's clearer before acting — it may not amount to anything."},
+    {val:2,label:"I mention it to a peer or my manager to get a second opinion."},
+    {val:3,label:"I bring it to the team and start mapping out what it could mean and what our options are."},
+    {val:4,label:"I brief the team, begin building a response strategy, and allocate resources to it before it becomes urgent."}
+  ]},
+  {pillar:4,text:"One of your best team members would be a strong candidate for a more senior role — but it would mean losing them from your team. How do you handle that?",options:[
+    {val:1,label:"I focus on retaining them — losing them would set the team back significantly."},
+    {val:2,label:"I support them exploring options but don't actively open the door for them."},
+    {val:3,label:"I actively discuss their ambitions and help them think through what the next step looks like, even if that's elsewhere."},
+    {val:4,label:"I advocate for them externally, build their visibility with senior leaders, and see their progression — even out of my team — as one of my best outcomes as a leader."}
+  ]},
+  // ── PILLAR 6: SELF-CARE & MENTAL HEALTH ──
+  {pillar:5,text:"You notice clear signs that a team member is burning out — declining output, withdrawal, shorter responses. What do you do?",options:[
+    {val:1,label:"I monitor the situation and step in if performance drops to a level that affects the team."},
+    {val:2,label:"I mention to HR or their buddy that I'm a bit concerned."},
+    {val:3,label:"I make time for a one-on-one, name what I'm observing directly, and ask how they're doing."},
+    {val:4,label:"I act immediately — reduce their load, have an honest conversation, connect them to support if needed, and don't wait for it to get worse."}
+  ]},
+  {pillar:5,text:"It's 7pm on a Friday. You're exhausted. A non-urgent message comes in from a team member. What do you do?",options:[
+    {val:1,label:"I reply now — I don't want them waiting all weekend for something I can sort in two minutes."},
+    {val:2,label:"I read it to check the urgency, then decide whether it can wait."},
+    {val:3,label:"I don't check messages after hours — I've set that boundary and I stick to it."},
+    {val:4,label:"I don't check messages after hours, and I've made this boundary visible to my team so they feel permission to do the same."}
+  ]},
+  {pillar:5,text:"You are personally running on empty — sleep-deprived, stretched thin, not at your best. How do you lead through that period?",options:[
+    {val:1,label:"I push through — my team needs consistency and showing vulnerability doesn't help anyone."},
+    {val:2,label:"I manage it privately and try to maintain the same output without letting it show."},
+    {val:3,label:"I name it to my team: 'I'm not at 100% this week — bear with me and flag anything urgent.'"},
+    {val:4,label:"I name it, take the steps I need to recover, and use it as an open moment to talk about mental health and sustainability with my team."}
+  ]},
+  // ── PILLAR 7: CONTINUOUS TEAM DEVELOPMENT ──
+  {pillar:6,text:"Your team has quarterly performance reviews. Between those reviews, what does your investment in individual development actually look like?",options:[
+    {val:1,label:"I address development when it comes up — the reviews cover it formally."},
+    {val:2,label:"I have ad hoc conversations when I notice something or when they bring something to me."},
+    {val:3,label:"I have regular one-on-ones with each person where development is a standing topic."},
+    {val:4,label:"Each person has a development plan I've co-created with them, and I actively look for opportunities that match where they're trying to grow."}
+  ]},
+  {pillar:6,text:"A team member has been underperforming for about six weeks. What does your response look like?",options:[
+    {val:1,label:"I document the performance issues and begin a formal process."},
+    {val:2,label:"I raise it in a one-on-one and make clear the standard I expect."},
+    {val:3,label:"I have a direct conversation to understand what's behind it — whether it's skill, circumstance, or fit — before deciding on a path."},
+    {val:4,label:"I engage with them as a whole person first: understand what's driving it, co-create a support plan, and commit to being part of the solution — not just the judge of the outcome."}
+  ]},
+  {pillar:6,text:"A significant project needs a lead. You have a capable team member who's ready to step up but hasn't done it before. What do you do?",options:[
+    {val:1,label:"I lead it myself — the stakes are too high to risk on someone untested."},
+    {val:2,label:"I assign it to them but stay closely involved to make sure it goes well."},
+    {val:3,label:"I give them the lead, make clear I'm available, and let them drive — stepping in only if asked."},
+    {val:4,label:"I give them full ownership, brief the stakeholders that they're leading it, and create visibility for them — not just a safety net."}
+  ]},
+  {pillar:6,text:"Your top performer tells you a recruiter has been in touch about a role at a competing organization. They come to you about it. What do you do?",options:[
+    {val:1,label:"I make the case for why staying is the right move — the opportunity here is strong."},
+    {val:2,label:"I listen, acknowledge the opportunity, and let them know the door is open if they decide to stay."},
+    {val:3,label:"I help them think through what the move would actually mean for their career — without steering the outcome."},
+    {val:4,label:"I actively help them evaluate it honestly, advocate for what's best for them, and if they go, I celebrate the move and maintain the relationship."}
+  ]}
+];
+
+// ════════════════════════════════════════════════
+// STATE
+// ════════════════════════════════════════════════
+let currentQ=0, answers=new Array(QUESTIONS.length).fill(null);
+let userName='', userRole='', userEmail='';
+let pillarScores=[], pillarAnalyses=[];
+let isTeamMode=false, leaderName='';
+
+// ════════════════════════════════════════════════
+// INIT — detect ?team= param for team mode
+// ════════════════════════════════════════════════
+(function init(){
+  if(EMAILJS_CONFIGURED) emailjs.init(EMAILJS_PUBLIC_KEY);
+  else setTimeout(()=>{ document.getElementById('setup-notice').style.display='block'; },2000);
+
+  const params = new URLSearchParams(window.location.search);
+  const teamParam = params.get('team');
+  if(teamParam){
+    try {
+      // Decode leader info from URL
+      const decoded = JSON.parse(decodeURIComponent(atob(teamParam.replace(/-/g,'+').replace(/_/g,'/'))));
+      isTeamMode = true;
+      leaderName = decoded.n || 'Your Leader';
+
+      // Update intro screen for team mode
+      document.getElementById('intro-team-banner').textContent =
+        `You're rating ${leaderName} — answer each question as you observe them leading`;
+      document.getElementById('intro-team-banner').classList.add('show');
+      document.getElementById('intro-title').innerHTML = `Rate Your Leader<br>Assessment`;
+      document.getElementById('intro-eyebrow').textContent = 'Team Feedback Mode · The Leader Paradox';
+      document.getElementById('intro-desc').textContent =
+        `You've been invited by ${leaderName} to give honest feedback on their leadership. Answer each question based on what you actually observe — not what you think they'd want to hear. Your response is anonymous.`;
+
+      // Update name screen for team mode
+      document.getElementById('name-screen-title').textContent = 'About you';
+      document.getElementById('name-screen-desc').textContent =
+        `Your response is completely anonymous. Your name below is just used to personalise the results page — it won't be shared with ${leaderName}.`;
+      document.getElementById('email-note-text').textContent =
+        `Your email is optional and will only be used to send you a copy of your own feedback summary.`;
+    } catch(e){ console.error('Team param decode error',e); }
+  }
+})();
+
+// ════════════════════════════════════════════════
+// NAVIGATION
+// ════════════════════════════════════════════════
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0,0);
+}
+
+function updateProgress(){
+  const pct=(answers.filter(a=>a!==null).length/QUESTIONS.length)*100;
+  document.getElementById('progress-bar').style.width=pct+'%';
+}
+
+function startAssessment(){
+  userName=document.getElementById('input-name').value.trim()||'Respondent';
+  userRole=document.getElementById('input-role').value.trim();
+  userEmail=document.getElementById('input-email').value.trim();
+  currentQ=0; answers=new Array(QUESTIONS.length).fill(null);
+  renderQuestion(); showScreen('screen-question');
+}
+
+// ════════════════════════════════════════════════
+// QUESTIONS
+// ════════════════════════════════════════════════
+function renderQuestion(){
+  const q=QUESTIONS[currentQ], p=PILLARS[q.pillar];
+  document.getElementById('q-pillar-label').textContent=`Pillar ${q.pillar+1} of 7`;
+  document.getElementById('q-pillar-sub').textContent=p.name;
+  document.getElementById('q-pillar-name').textContent=p.name;
+  document.getElementById('q-counter').textContent=`${currentQ+1} / ${QUESTIONS.length}`;
+
+  // In team mode, rephrase questions to third person
+  let qText = q.text;
+  if(isTeamMode){
+    qText = qText
+      .replace(/\bYou make\b/g,`${leaderName} makes`)
+      .replace(/\bYou're\b/gi,`${leaderName} is`)
+      .replace(/\bYou are\b/gi,`${leaderName} is`)
+      .replace(/\bYou notice\b/gi,`${leaderName} notices`)
+      .replace(/\bYour\b/gi,`${leaderName}'s`)
+      .replace(/\bYou\b/gi,leaderName)
+      .replace(/\bI /g,'They ')
+      .replace(/\bI'/g,"They'")
+      .replace(/\bmy\b/gi,'their')
+      .replace(/\bme\b/gi,'them');
+  }
+  document.getElementById('q-text').textContent=qText;
+
+  const scaleEl=document.getElementById('q-scale');
+  scaleEl.innerHTML='';
+  q.options.forEach((opt,idx)=>{
+    const div=document.createElement('div');
+    div.className='scale-option'+(answers[currentQ]===opt.val?' selected':'');
+    const letter=String.fromCharCode(65+idx);
+    let labelText=opt.label;
+    if(isTeamMode){
+      labelText=labelText
+        .replace(/^I /,'They ')
+        .replace(/\bI'/g,"They'")
+        .replace(/\bmy\b/gi,'their')
+        .replace(/\bme\b/gi,'them');
+    }
+    div.innerHTML=`<span class="scale-letter">${letter}</span><span class="scale-label">${labelText}</span>`;
+    div.onclick=()=>selectAnswer(opt.val,div);
+    scaleEl.appendChild(div);
+  });
+
+  const btn=document.getElementById('btn-next');
+  btn.classList.toggle('ready',answers[currentQ]!==null);
+  btn.textContent=currentQ===QUESTIONS.length-1?'See Results →':'Next →';
+  document.getElementById('btn-back').style.visibility=currentQ===0?'hidden':'visible';
+  updateProgress();
+}
+
+function selectAnswer(val,el){
+  answers[currentQ]=val;
+  document.querySelectorAll('.scale-option').forEach(e=>e.classList.remove('selected'));
+  if(el) el.classList.add('selected');
+  document.getElementById('btn-next').classList.add('ready');
+  updateProgress();
+}
+
+function prevQuestion(){ if(currentQ>0){currentQ--;renderQuestion();} }
+function nextQuestion(){
+  if(answers[currentQ]===null) return;
+  if(currentQ<QUESTIONS.length-1){currentQ++;renderQuestion();}
+  else runAnalysis();
+}
+
+// ════════════════════════════════════════════════
+// SCORING
+// ════════════════════════════════════════════════
+function computeScores(){
+  pillarScores=PILLARS.map((p,pi)=>{
+    const qs=QUESTIONS.map((q,qi)=>({q,qi})).filter(x=>x.q.pillar===pi);
+    const total=qs.reduce((s,x)=>s+(answers[x.qi]||0),0);
+    const max=qs.length*4;
+    return {pillar:p,total,max,pct:Math.round((total/max)*100)};
+  });
+}
+function getArchetype(t){ return ARCHETYPES.find(a=>t>=a.min&&t<=a.max)||ARCHETYPES[0]; }
+
+// ════════════════════════════════════════════════
+// ANALYSIS
+// ════════════════════════════════════════════════
+async function runAnalysis(){
+  showScreen('screen-loading');
+  computeScores();
+  const msgs=['Reviewing integrity patterns…','Assessing others-first behaviors…',
+    'Evaluating communication style…','Analyzing collaboration tendencies…',
+    'Examining strategic foresight…','Reviewing self-care leadership…',
+    'Assessing team development practices…','Synthesizing your profile…'];
+  let mi=0;
+  const msgEl=document.getElementById('loading-msg');
+  const iv=setInterval(()=>{msgEl.textContent=msgs[mi%msgs.length];mi++;},1800);
+  try{ await generateAIResults(); }catch(e){ console.error(e); generateFallbackResults(); }
+  clearInterval(iv);
+  buildResultsScreen();
+  showScreen('screen-results');
+  setTimeout(animatePillars,400);
+  setTimeout(sendEmail,1000);
+}
+
+async function generateAIResults(){
+  const scoresSummary=pillarScores.map(ps=>`${ps.pillar.name}: ${ps.total}/${ps.max} (${ps.pct}%)`).join('\n');
+  const qaSummary=QUESTIONS.map((q,i)=>{
+    const chosen=q.options.find(o=>o.val===answers[i]);
+    const letter=answers[i]?String.fromCharCode(64+answers[i]):'?';
+    return `Q${i+1} [${PILLARS[q.pillar].short}]: Option ${letter} (${answers[i]}/4): "${chosen?.label||''}"`;
+  }).join('\n');
+  const totalScore=pillarScores.reduce((s,p)=>s+p.total,0);
+  const archetype=getArchetype(totalScore);
+  const perspective=isTeamMode?`This is a team member's assessment of ${leaderName}'s leadership.`:`This is a self-assessment by ${userName}${userRole?', '+userRole:''}.`;
+
+  const prompt=`You are an expert leadership coach specializing in servant leadership based on Dr. Jeremy Graves' framework "The Leader Paradox" — Seven Pillars: Personal Integrity & Ethics, Others First, Communication & Listening, Collaboration, Leading With the Future in Mind, Self-Care & Mental Health, Continuous Team Development.
+
+${perspective}
+Scores: ${scoresSummary}
+Total: ${totalScore}/96 — Archetype: ${archetype.label}
+Responses: ${qaSummary}
+
+Use American English spelling throughout. Respond ONLY with raw JSON, no markdown:
+{"executiveSummary":"3-4 sentences. Direct, professional. Reference specific pillars. Honest but constructive. Second person if self-assessment, third person if team rating.","pillars":[
+{"pillarName":"Personal Integrity & Ethics","score":${pillarScores[0].total},"analysis":"2-3 concrete sentences based on actual choices.","actions":["Action 1","Action 2","Action 3"]},
+{"pillarName":"Others First","score":${pillarScores[1].total},"analysis":"2-3 sentences.","actions":["Action 1","Action 2","Action 3"]},
+{"pillarName":"Communication & Listening","score":${pillarScores[2].total},"analysis":"2-3 sentences.","actions":["Action 1","Action 2","Action 3"]},
+{"pillarName":"Collaboration","score":${pillarScores[3].total},"analysis":"2-3 sentences.","actions":["Action 1","Action 2","Action 3"]},
+{"pillarName":"Leading With the Future in Mind","score":${pillarScores[4].total},"analysis":"2-3 sentences.","actions":["Action 1","Action 2","Action 3"]},
+{"pillarName":"Self-Care & Mental Health","score":${pillarScores[5].total},"analysis":"2-3 sentences.","actions":["Action 1","Action 2","Action 3"]},
+{"pillarName":"Continuous Team Development","score":${pillarScores[6].total},"analysis":"2-3 sentences.","actions":["Action 1","Action 2","Action 3"]}]}`;
+
+  const resp=await fetch('https://api.anthropic.com/v1/messages',{
+    method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1800,messages:[{role:'user',content:prompt}]})
+  });
+  const data=await resp.json();
+  const parsed=JSON.parse((data.content?.[0]?.text||'').replace(/```json|```/g,'').trim());
+  pillarAnalyses=parsed.pillars;
+  window._aiExecSummary=parsed.executiveSummary;
+}
+
+function generateFallbackResults(){
+  window._aiExecSummary=null;
+  pillarAnalyses=pillarScores.map(ps=>{
+    const pct=ps.pct;
+    let analysis,actions;
+    if(pct>=80){
+      analysis=`Responses across ${ps.pillar.name} suggest this is a genuine strength — consistent and deliberate.`;
+      actions=['Continue modeling this pillar visibly for the team','Mentor others in developing this capability','Document what makes this work so it can be shared'];
+    }else if(pct>=60){
+      analysis=`Solid foundations in ${ps.pillar.name} but some inconsistency — particularly in high-pressure moments.`;
+      actions=['Identify one scenario where this pillar breaks down','Build a prompt or habit to activate it in that scenario','Ask a trusted colleague for honest feedback on this area'];
+    }else{
+      analysis=`Responses in ${ps.pillar.name} indicate this area requires deliberate development.`;
+      actions=['Start with one small consistent behavior change this week','Read the relevant chapters in The Leader Paradox','Schedule a team conversation about what people need here'];
+    }
+    return {pillarName:ps.pillar.name,score:ps.total,analysis,actions};
+  });
+}
+
+// ════════════════════════════════════════════════
+// BUILD RESULTS SCREEN
+// ════════════════════════════════════════════════
+function buildResultsScreen(){
+  const total=pillarScores.reduce((s,p)=>s+p.total,0);
+  const arch=getArchetype(total);
+  const roleStr=userRole?` · ${userRole}`:'';
+
+  if(isTeamMode){
+    document.getElementById('results-eyebrow').textContent='Team Feedback Complete';
+    document.getElementById('results-name').textContent=`${userName}'s rating of ${leaderName}`;
+  } else {
+    document.getElementById('results-name').textContent=userName+roleStr;
+  }
+  document.getElementById('results-archetype').textContent=arch.label;
+  document.getElementById('score-num').textContent=total;
+  document.getElementById('results-desc').textContent=arch.desc;
+  document.getElementById('ai-exec-text').innerHTML=window._aiExecSummary
+    ?`<p>${window._aiExecSummary}</p>`
+    :`<p>Assessment complete. Review your pillar breakdowns below for detailed analysis and recommended actions.</p>`;
+
+  // Column viz
+  const cw=document.getElementById('cols-wrap'); cw.innerHTML='';
+  pillarScores.forEach((ps,i)=>{
+    const c=document.createElement('div'); c.className='col-item';
+    c.innerHTML=`<div class="col-score">${ps.total}/${ps.max}</div>
+      <div class="col-bar-outer"><div class="col-bar-inner" id="cb-${i}" style="height:0%;background:${PILLAR_COLORS[i]}"></div></div>
+      <div class="col-name">${ps.pillar.short}</div>`;
+    cw.appendChild(c);
+  });
+
+  // Pillar cards
+  const ce=document.getElementById('pillar-cards'); ce.innerHTML='';
+  pillarAnalyses.forEach((pa,i)=>{
+    const ps=pillarScores[i], pct=ps.pct;
+    const sc=pct>=75?'var(--green)':pct>=50?'var(--amber)':'var(--red)';
+    const card=document.createElement('div'); card.className='pillar-card'; card.id=`card-${i}`;
+    card.innerHTML=`
+      <div class="pillar-card-hd" onclick="toggleCard(${i})">
+        <span class="pc-num">${String(i+1).padStart(2,'0')}</span>
+        <span class="pc-name">${pa.pillarName}</span>
+        <span class="pc-score" style="color:${sc};border:1px solid ${sc}">${ps.total}/${ps.max}</span>
+        <span class="pc-chevron">▾</span>
+      </div>
+      <div class="pillar-card-bd" id="cbd-${i}">
+        <div class="pc-analysis">${pa.analysis}</div>
+        <div class="pc-actions-title">Recommended Actions</div>
+        ${pa.actions.map(a=>`<div class="action-row"><div class="action-dot"></div><div class="action-txt">${a}</div></div>`).join('')}
+      </div>`;
+    ce.appendChild(card);
+  });
+
+  // Open lowest pillar
+  const low=pillarScores.indexOf(pillarScores.reduce((a,b)=>a.pct<b.pct?a:b));
+  toggleCard(low);
+
+  // Share section — only show in self-assessment mode
+  if(!isTeamMode){
+    document.getElementById('share-section').style.display='block';
+    // Build a real, working share URL with the leader's name encoded
+    const payload={n:userName, r:userRole};
+    const encoded=btoa(encodeURIComponent(JSON.stringify(payload)))
+      .replace(/\+/g,'-').replace(/\//g,'_').replace(/=/g,'');
+    const base=window.location.href.split('?')[0];
+    const shareURL=`${base}?team=${encoded}`;
+    document.getElementById('share-link').value=shareURL;
+    const anchor=document.getElementById('share-link-anchor');
+    if(anchor){ anchor.href=shareURL; anchor.textContent='Open link to test it → '; }
+  }
+}
+
+function toggleCard(i){
+  const bd=document.getElementById(`cbd-${i}`);
+  const card=document.getElementById(`card-${i}`);
+  const open=bd.classList.contains('open');
+  bd.classList.toggle('open',!open);
+  card.classList.toggle('open',!open);
+}
+
+function animatePillars(){
+  pillarScores.forEach((ps,i)=>{
+    setTimeout(()=>{
+      const b=document.getElementById(`cb-${i}`);
+      if(b) b.style.height=ps.pct+'%';
+    },i*110);
+  });
+}
+
+function copyShareLink(){
+  const inp=document.getElementById('share-link');
+  inp.select(); inp.setSelectionRange(0,99999);
+  try {
+    navigator.clipboard.writeText(inp.value).then(()=>{
+      showCopied();
+    }).catch(()=>{
+      document.execCommand('copy');
+      showCopied();
+    });
+  } catch(e){
+    document.execCommand('copy');
+    showCopied();
+  }
+}
+function showCopied(){
+  const btn=document.getElementById('btn-copy');
+  if(!btn) return;
+  btn.textContent='✓ Copied!';
+  btn.style.background='var(--green)';
+  btn.style.color='white';
+  setTimeout(()=>{
+    btn.textContent='Copy Link';
+    btn.style.background='var(--gold)';
+    btn.style.color='var(--blue-dark)';
+  },3000);
+}
+
+// ════════════════════════════════════════════════
+// EMAIL VIA EMAILJS
+// ════════════════════════════════════════════════
+async function sendEmail(){
+  const total=pillarScores.reduce((s,p)=>s+p.total,0);
+  const arch=getArchetype(total);
+  const date=new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
+  const subject=isTeamMode
+    ?`Leader Paradox Team Feedback — ${leaderName} rated by ${userName} — ${total}/96`
+    :`Leader Paradox Assessment — ${userName} — ${arch.label} (${total}/96)`;
+
+  const pillarLines=pillarScores.map((ps,i)=>{
+    const pa=pillarAnalyses[i];
+    return `${ps.pillar.name}: ${ps.total}/${ps.max} (${ps.pct}%)\n${pa?.analysis||''}\nActions: ${(pa?.actions||[]).join(' | ')}`;
+  }).join('\n\n');
+
+  const bodyText=`THE LEADER PARADOX — ${isTeamMode?'TEAM FEEDBACK':'SELF-ASSESSMENT'} RESULTS
+Dr. Jeremy Graves · JGG Leadership
+
+${isTeamMode?`Rated by: ${userName}\nLeader rated: ${leaderName}`:`Respondent: ${userName}${userRole?' · '+userRole:''}`}
+${userEmail?`Email: ${userEmail}`:''}
+Date: ${date}
+
+OVERALL SCORE: ${total}/96
+ARCHETYPE: ${arch.label}
+${arch.desc}
+
+EXECUTIVE SUMMARY:
+${window._aiExecSummary||'See pillar breakdown below.'}
+
+PILLAR BREAKDOWN:
+${pillarLines}
+
+---
+Based on The Leader Paradox by Dr. Jeremy Graves
+JGG Leadership · drjeremygraves@gmail.com`;
+
+  const noticeEl=document.getElementById('email-notice');
+  const cardEl=document.getElementById('email-card');
+  const textEl=document.getElementById('email-text');
+  noticeEl.style.display='block';
+
+  if(EMAILJS_CONFIGURED){
+    try{
+      // EmailJS on free plan routes to the To Email field set in the template ({{to_email}}).
+      // We must pass to_email in the params to override it per send.
+      await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID,{
+        to_email: ADMIN_EMAIL,
+        to_name: 'Dr. Jeremy Graves',
+        subject: subject,
+        message: bodyText
+      }, EMAILJS_PUBLIC_KEY);
+
+      if(userEmail){
+        await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID,{
+          to_email: userEmail,
+          to_name: userName,
+          subject: subject,
+          message: bodyText
+        }, EMAILJS_PUBLIC_KEY);
+      }
+
+      cardEl.className='email-card success';
+      textEl.innerHTML=userEmail
+        ?`✅ Results sent to <strong>${userEmail}</strong> and to Dr. Jeremy Graves.`
+        :`✅ Results sent to Dr. Jeremy Graves at ${ADMIN_EMAIL}.`;
+
+    }catch(err){
+      console.error('EmailJS error:', err);
+      // Fall back to mailto so nothing is lost
+      showMailtoFallback(subject, bodyText, noticeEl, cardEl, textEl);
+    }
+  } else {
+    showMailtoFallback(subject, bodyText, noticeEl, cardEl, textEl);
+  }
+}
+
+function showMailtoFallback(subject, body, noticeEl, cardEl, textEl){
+  const recipients=[ADMIN_EMAIL];
+  if(userEmail) recipients.push(userEmail);
+  const link=`mailto:${recipients.join(',')}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  cardEl.className='email-card pending';
+  textEl.innerHTML=`<a href="${link}" style="color:var(--amber);font-weight:700;font-size:15px;">📧 Tap here to send your results</a><br><span style="font-size:12px;color:var(--muted)">Opens your mail app pre-filled — just hit Send.</span>`;
+  noticeEl.style.display='block';
+}
+
+// ════════════════════════════════════════════════
+// KEYBOARD SHORTCUTS
+// ════════════════════════════════════════════════
+document.addEventListener('keydown',e=>{
+  if(document.querySelector('.screen.active')?.id!=='screen-question') return;
+  const map={a:0,b:1,c:2,d:3,'1':0,'2':1,'3':2,'4':3};
+  const idx=map[e.key.toLowerCase()];
+  if(idx!==undefined){
+    const opt=QUESTIONS[currentQ].options[idx];
+    const el=document.querySelectorAll('.scale-option')[idx];
+    if(opt&&el) selectAnswer(opt.val,el);
+  }
+  if(e.key==='Enter'&&answers[currentQ]!==null) nextQuestion();
+  if(e.key==='ArrowLeft'&&currentQ>0) prevQuestion();
+});
+</script>
+</body>
+</html>
